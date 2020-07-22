@@ -20,4 +20,4 @@ Route::get('/', function () {
 Auth::routes();
 
 
-Route::resource('/home', 'LotController');
+Route::resource('/lots', 'LotController');

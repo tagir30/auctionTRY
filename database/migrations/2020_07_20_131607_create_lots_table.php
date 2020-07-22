@@ -21,6 +21,7 @@ class CreateLotsTable extends Migration
             $table->string('pathImage');
             $table->string('description');
             $table->integer('timeLeft')->default(6);
+            $table->integer('status')->default(0);
 
             $table->foreignId('user_id');
         });
