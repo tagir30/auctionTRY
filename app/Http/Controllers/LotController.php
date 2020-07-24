@@ -17,7 +17,7 @@ class LotController extends Controller
      */
     public function index()
     {
-        $lots = Lot::paginate(5);
+        $lots = Lot::where('user_id', Auth::id())->paginate(5);
         return view('home', compact('lots'));
     }
 
@@ -72,7 +72,8 @@ class LotController extends Controller
         $lot = Lot::findOrFail($id);
         $lot->status = 1;
         $lot->update();
-        ProcessLotCancel::dispatch($lot)->delay(30);
+
+        ProcessLotCancel::dispatch($lot)->delay(now()->addMinutes($lot->timeLeft));
         return back();
     }
 
@@ -92,7 +93,7 @@ class LotController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return Response
+     * @return void
      */
     public function destroy($id)
     {

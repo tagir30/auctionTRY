@@ -1,6 +1,6 @@
-@extends('layouts.nav')
+@extends('layouts.app')
 
-@section('nav')
+@section('content')
     <!doctype html>
 <html lang="ru">
 <head>

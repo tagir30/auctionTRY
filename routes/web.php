@@ -21,3 +21,4 @@ Auth::routes();
 
 
 Route::resource('/lots', 'LotController');
+Route::get('/', 'AuctionController@index')->name('auction.index');

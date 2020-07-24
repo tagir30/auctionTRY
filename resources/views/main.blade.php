@@ -1,14 +1,7 @@
 @extends('layouts.app')
 
-
 @section('content')
     <div class="container">
-        <div class="text-center">
-            <a href="{{route('lots.create')}}">
-                <button class="btn btn-dark btn-lg">Созадть новый лот</button>
-            </a>
-        </div>
-        <br>
         <div class="row">
             @foreach($lots as $lot)
                 <div class="col-md-4">
@@ -27,22 +20,14 @@
                             <p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    @if(!$lot->status)
-                                        <a onclick="return confirm('Вы уверены?')"
-                                           href="{{route('lots.edit', ['lot' => $lot->id])}}">
-                                            <button type="button" class="btn btn-danger">Выставить на
-                                                аукцион
-                                        </button>
+                                    {{--                                    <a href="{{route('lots.edit', ['lot' => $lot->id])}}">--}}
+                                    <button type="button" class="btn btn-sm btn-outline-secondary ">Выставить на
+                                        аукцион
+                                    </button>
                                     </a>
-                                    @else
-                                        <a onclick="return confirm('Вы уверены?')" href="#">
-                                            <button type="button" class="btn btn-danger">
-                                                Снять с аукциона
-                                            </button>
-                                        </a>
-                                    @endif
                                     <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                                 </div>
+                                <small class="text-muted">9 mins</small>
                             </div>
                         </div>
                     </div>
