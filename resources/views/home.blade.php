@@ -3,6 +3,14 @@
 
 @section('content')
     <div class="container">
+
+        @if (session()->has('success_message'))
+            <div class="spacer"></div>
+            <div class="alert alert-success">
+                {{ session()->get('success_message') }}
+            </div>
+        @endif
+
         <div class="text-center">
             <a href="{{route('lots.create')}}">
                 <button class="btn btn-dark btn-lg">Созадть новый лот</button>
@@ -32,8 +40,8 @@
                                            href="{{route('lots.edit', ['lot' => $lot->id])}}">
                                             <button type="button" class="btn btn-danger">Выставить на
                                                 аукцион
-                                        </button>
-                                    </a>
+                                            </button>
+                                        </a>
                                     @else
                                         <a onclick="return confirm('Вы уверены?')" href="#">
                                             <button type="button" class="btn btn-danger">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LotRequest;
 use App\Jobs\ProcessLotCancel;
 use App\Lot;
 use Illuminate\Http\Request;
@@ -37,16 +38,17 @@ class LotController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(LotRequest $request)
     {
         Lot::create([
             'name' => $request->lot['nameLot'],
             'description' => $request->lot['description'],
             'startingPrice' => $request->lot['startingPrice'],
             'timeLeft' => $request->lot['timeLeft'],
-            'pathImage' => $request->lot['image'],
-            'user_id' => Auth::user()->id,
+            'pathImage' => $request->lot['image'] ?? null,
+            'user_id' => Auth::id(),
         ]);
+        session()->flash('success_message', 'Лот успешно создан!');
         return redirect()->route('lots.index');
     }
 
@@ -54,7 +56,7 @@ class LotController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return Response
+     * @return void
      */
     public function show($id)
     {
