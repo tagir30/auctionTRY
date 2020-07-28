@@ -40,12 +40,18 @@ class LotController extends Controller
      */
     public function store(LotRequest $request)
     {
+
+        if ($request->file('lot.image')) {
+            $path = $request->file('lot.image')->store('uploads', 'public');
+        } else {
+            $path = '/uploads/no.jpg';//Как-то это поправить надо...
+        }
         Lot::create([
             'name' => $request->lot['nameLot'],
             'description' => $request->lot['description'],
             'startingPrice' => $request->lot['startingPrice'],
             'timeLeft' => $request->lot['timeLeft'],
-            'pathImage' => $request->lot['image'] ?? null,
+            'pathImage' => $path,
             'user_id' => Auth::id(),
         ]);
         session()->flash('success_message', 'Лот успешно создан!');
@@ -60,7 +66,8 @@ class LotController extends Controller
      */
     public function show($id)
     {
-        //
+        $lot = Lot::findOrFail($id);
+        return view('show', compact('lot'));
     }
 
     /**
