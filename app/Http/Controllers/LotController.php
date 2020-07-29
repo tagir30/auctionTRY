@@ -54,8 +54,8 @@ class LotController extends Controller
             'pathImage' => $path,
             'user_id' => Auth::id(),
         ]);
-        session()->flash('success_message', 'Лот успешно создан!');
-        return redirect()->route('lots.index');
+
+        return redirect()->route('lots.index')->with('success_message', 'Лот успешно создан!');
     }
 
     /**
@@ -83,7 +83,7 @@ class LotController extends Controller
         $lot->update();
 
         ProcessLotCancel::dispatch($lot)->delay(now()->addMinutes($lot->timeLeft));
-        return back();
+        return back()->with('success_message', 'Лот успешно выставлен!');
     }
 
     /**
@@ -106,6 +106,12 @@ class LotController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $lot = Lot::findOrFail($id);
+
+        if (Auth::id() === $lot->user_id) {
+            $lot->delete();
+
+            return redirect()->route('lots.index')->with('success_message', 'Лот успешно удалён');
+        }
     }
 }

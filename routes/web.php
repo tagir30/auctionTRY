@@ -17,5 +17,5 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 
-Route::resource('/lots', 'LotController');
+Route::resource('/lots', 'LotController')->middleware('auth');
 Route::get('/', 'AuctionController@index')->name('auction.index');

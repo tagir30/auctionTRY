@@ -17,46 +17,51 @@
             </a>
         </div>
         <br>
-        <div class="row">
-            @foreach($lots as $lot)
-                <div class="col-md-4">
-                    <div class="card mb-4 box-shadow">
-                        <img class="card-img-top"
-                             style="height: 225px; width: 100%; display: block;"
-                             src="{{asset('/storage/' . $lot->pathImage)}}"
-                             data-holder-rendered="true">
-                        <div class="card-body">
-                            <p class="card-text">
-                            <h1>{{$lot->name}}</h1>
-                            <h2>{{$lot->description}}</h2>
-                            <h3>{{$lot->startingPrice}} рублей</h3>
-                            <h3>{{$lot->timeLeft}} часов</h3>
-                            <p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    @if(!$lot->status)
-                                        <a onclick="return confirm('Вы уверены?')"
-                                           href="{{route('lots.edit', ['lot' => $lot->id])}}">
-                                            <button type="button" class="btn btn-danger">Выставить на
-                                                аукцион
-                                            </button>
+        @isset($lots)
+            <div class="row">
+                @foreach($lots as $lot)
+                    <div class="col-md-4">
+                        <div class="card mb-4 box-shadow">
+                            <img class="card-img-top"
+                                 style="height: 225px; width: 100%; display: block;"
+                                 src="{{asset('/storage/' . $lot->pathImage)}}"
+                                 data-holder-rendered="true">
+                            <div class="card-body">
+                                <p class="card-text">
+                                <h1>{{$lot->name}}</h1>
+                                <h2>{{$lot->description}}</h2>
+                                <h3>{{$lot->startingPrice}} рублей</h3>
+                                <h3>{{$lot->timeLeft}} часов</h3>
+                                <p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        @if(!$lot->status)
+                                            <a onclick="return confirm('Вы уверены?')"
+                                               href="{{route('lots.edit', ['lot' => $lot->id])}}">
+                                                <button type="button" class="btn btn-danger">Выставить на
+                                                    аукцион
+                                                </button>
+                                            </a>
+                                        @else
+                                            <form action="{{route('lots.destroy', ['lot' => $lot->id])}}" method="POST">
+                                                @method("")
+                                                {{--                                        <a onclick="return confirm('Вы уверены?')" href="{{route('lots.destroy', ['lot' => $lot->id])}}">--}}
+                                                <button type="submit" class="btn btn-danger">
+                                                    Снять с аукциона
+                                                </button>
+                                                {{--                                        </a>--}}
+                                            </form>
+                                        @endif
+                                        <a href="{{route('lots.show', ['lot' => $lot->id])}}">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                                         </a>
-                                    @else
-                                        <a onclick="return confirm('Вы уверены?')" href="#">
-                                            <button type="button" class="btn btn-danger">
-                                                Снять с аукциона
-                                            </button>
-                                        </a>
-                                    @endif
-                                    <a href="{{route('lots.show', ['lot' => $lot->id])}}">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                    </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
-        </div>
+                @endforeach
+            </div>
+        @endisset
     </div>
 @endsection
