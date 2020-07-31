@@ -28,7 +28,7 @@ class LotController extends Controller
     public function index()
     {
         $lots = Lot::where('user_id', Auth::id())->paginate(5);
-        return view('home', compact('lots'));
+        return view('lots.home', compact('lots'));
     }
 
     /**
@@ -38,7 +38,7 @@ class LotController extends Controller
      */
     public function create()
     {
-        return view('create');
+        return view('lots.create');
     }
 
     /**
@@ -73,7 +73,7 @@ class LotController extends Controller
     public function show($id)
     {
         $lot = Lot::findOrFail($id);
-        return view('show', compact('lot'));
+        return view('lots.show', compact('lot'));
     }
 
     /**
@@ -85,7 +85,7 @@ class LotController extends Controller
     public function edit($id)
     {
         $lot = Lot::findOrFail($id);
-        return view('edit', compact('lot'));
+        return view('lots.edit', compact('lot'));
     }
 
     /**
