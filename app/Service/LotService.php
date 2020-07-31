@@ -6,15 +6,19 @@ namespace App\Service;
 
 use App\Jobs\ProcessLotCancel;
 use App\Lot;
+use App\Offer;
+use Illuminate\Support\Facades\Auth;
 
 class LotService
 {
+
+
     public function handleUploadedImage($image): string
     {
         if (!is_null($image)) {
             $path = $image->store('uploads', 'public');
         } else {
-            $path = '/uploads/no.jpg';//Как-то это поправить надо...
+            $path = config('constants.PATH_DEFAULT_IMAGE');//Как-то это поправить надо...
         }
         return $path;
     }
@@ -35,6 +39,7 @@ class LotService
     private function removeLotFromAuction($lot)//Нужно дописать вычисление ставки итоговой
     {
         $lot->status = 0;//Возможно есть способ удалить из очереди... Есть вариант сохранять в бд uuid
+        Offer::findOrFail($lot->id)->delete();
         session()->flash('success_message', 'Лот успешно снят с аукционна!');
         $lot->update();
     }
@@ -43,6 +48,12 @@ class LotService
     {
         $lot->status = 1;
         ProcessLotCancel::dispatch($lot)->delay(now()->addHours($lot->timeLeft));//Для проверки можно заменить на addMinutes addHours
+        Offer::create([
+            'lot_id' => $lot->id,
+            'user_id' => Auth::id(),
+            'price' => $lot->startingPrice,
+            'pathImage' => $lot->pathImage,
+        ]);
         session()->flash('success_message', 'Лот успешно выставлен!');
         $lot->update();
     }

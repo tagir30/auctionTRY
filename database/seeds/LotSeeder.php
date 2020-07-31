@@ -20,7 +20,7 @@ class LotSeeder extends Seeder
         $lot1->startingPrice = 12000;
         $lot1->description = 'Lot 1 create for test';
         $lot1->timeLeft = 7;//часов
-        $lot1->pathImage = 'undefuned';
+        $lot1->pathImage = config('constants.PATH_DEFAULT_IMAGE');
         $lot1->user_id = $user->id;
         $lot1->save();
     }

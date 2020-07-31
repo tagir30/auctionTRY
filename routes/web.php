@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
-
+Route::get('/', function (){
+    return view('auth.login');//Какую-нибудь приветсвенную страницу
+});
 Route::resource('/lots', 'LotController')->middleware('auth');
-Route::get('/', 'AuctionController@index')->name('auction.index');
+Route::resource('/offers', 'AuctionController');
