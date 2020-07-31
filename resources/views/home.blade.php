@@ -35,23 +35,22 @@
                                 <p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
+                                        <form action="{{route('lots.update', ['lot' => $lot->id])}}" method="post">
+                                            @csrf
+                                            @method('PATCH')
                                         @if(!$lot->status)
-                                            <a onclick="return confirm('Вы уверены?')"
-                                               href="{{route('lots.edit', ['lot' => $lot->id])}}">
-                                                <button type="button" class="btn btn-danger">Выставить на
-                                                    аукцион
-                                                </button>
-                                            </a>
+
+                                                <input type="hidden" name="lotAdd">
+                                                    <button type="submit" onclick="return confirm('Вы уверены?')" class="btn btn-danger">
+                                                        Выставить на аукцион
+                                                    </button>
                                         @else
-                                            <form action="{{route('lots.destroy', ['lot' => $lot->id])}}" method="POST">
-                                                @method("")
-                                                {{--                                        <a onclick="return confirm('Вы уверены?')" href="{{route('lots.destroy', ['lot' => $lot->id])}}">--}}
-                                                <button type="submit" class="btn btn-danger">
+                                                <input type="hidden" name="lotRemove">
+                                                <button type="submit" onclick="return confirm('Вы уверены?')" class="btn btn-danger">
                                                     Снять с аукциона
                                                 </button>
-                                                {{--                                        </a>--}}
-                                            </form>
                                         @endif
+                                        </form>
                                         <a href="{{route('lots.show', ['lot' => $lot->id])}}">
                                             <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                                         </a>

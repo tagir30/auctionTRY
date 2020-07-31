@@ -19,6 +19,22 @@
                     @csrf
                     <button type="submit">Удалить лот</button>
                 </form>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                        <form action="{{route('lots.update', ['lot' => $lot->id])}}" method="post">
+                            @csrf
+                            @method('PATCH')
+                            @if(!$lot->status)
+                                <input type="hidden" name="addToAuction">
+                                <button type="submit" onclick="return confirm('Вы уверены?')" class="btn btn-danger">
+                                    Выставить на аукцион
+                                </button>
+                            @else
+                                <input type="hidden" name="lotRemove">
+                                <button type="submit" onclick="return confirm('Вы уверены?')" class="btn btn-danger">
+                                    Снять с аукциона
+                                </button>
+                        @endif
             </div>
         </div>
 

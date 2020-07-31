@@ -5,12 +5,21 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LotRequest;
 use App\Jobs\ProcessLotCancel;
 use App\Lot;
+use App\Service\LotService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class LotController extends Controller
 {
+    private $lotService;
+
+    public function __construct(LotService $lotService)
+    {
+        $this->lotService = $lotService;
+
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -41,11 +50,8 @@ class LotController extends Controller
     public function store(LotRequest $request)
     {
 
-        if ($request->file('lot.image')) {
-            $path = $request->file('lot.image')->store('uploads', 'public');
-        } else {
-            $path = '/uploads/no.jpg';//Как-то это поправить надо...
-        }
+        $path = $this->lotService->handleUploadedImage($request->file('lot.image'));
+
         Lot::create([
             'name' => $request->lot['nameLot'],
             'description' => $request->lot['description'],
@@ -71,7 +77,7 @@ class LotController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     *
      *
      * @param int $id
      * @return Response
@@ -79,11 +85,7 @@ class LotController extends Controller
     public function edit($id)
     {
         $lot = Lot::findOrFail($id);
-        $lot->status = 1;
-        $lot->update();
-
-        ProcessLotCancel::dispatch($lot)->delay(now()->addMinutes($lot->timeLeft));
-        return back()->with('success_message', 'Лот успешно выставлен!');
+        return view('edit', compact('lot'));
     }
 
     /**
@@ -95,7 +97,8 @@ class LotController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->lotService->addOrRemoveToAuction($id);
+        return back();
     }
 
     /**
@@ -104,14 +107,14 @@ class LotController extends Controller
      * @param int $id
      * @return void
      */
-    public function destroy($id)
+    public function destroy($id)//Дописать условия при нахождения лота на аукционне и т.д
     {
-        $lot = Lot::findOrFail($id);
-
-        if (Auth::id() === $lot->user_id) {
-            $lot->delete();
-
-            return redirect()->route('lots.index')->with('success_message', 'Лот успешно удалён');
-        }
+//        $lot = Lot::findOrFail($id);
+//
+//        if (Auth::id() === $lot->user_id) {
+//            $lot->delete();
+//
+//            return redirect()->route('lots.index')->with('success_message', 'Лот успешно удалён');
+//        }
     }
 }
