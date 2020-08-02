@@ -14,8 +14,8 @@
                             <p class="card-text">
                             <h1>{{$lot->name}}</h1>
                             <h2>{{$lot->description}}</h2>
-                            <h3>{{$lot->startingPrice}} рублей</h3>{{--Изменять на актуальную--}}
-                            <h3>{{$lot->timeLeft}} часов</h3>{{--Желательно динамически показывать :(--}}
+                            <h3>{{$lot->offer->bet_on_lot}} рублей</h3>{{--Изменять на актуальную--}}
+{{--                            <h3>{{$lot->timeLeft}} часов</h3>--}}{{--Желательно динамически показывать :(--}}
                             <p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
@@ -25,10 +25,12 @@
                                 </div>
 
                                 <div class="btn-group">
-                                    <a href="{{route('offers.show', ['offer' => $lot->id])}}"></a>
-                                    <button type="button" class="btn-danger">
-                                        Посмотреть поближе :В
-                                    </button>
+                                    <a href="{{route('offers.show', ['offer' => $lot->offer->id])}}">
+                                        <button type="button" class="btn-danger">
+                                            Посмотреть поближе :В
+                                        </button>
+                                    </a>
+
                                 </div>
 
                             </div>

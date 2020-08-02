@@ -48,12 +48,12 @@ class LotService
     {
         $lot->status = 1;
         ProcessLotCancel::dispatch($lot)->delay(now()->addHours($lot->timeLeft));//Для проверки можно заменить на addMinutes addHours
-        Offer::create([
+        $offer = new Offer([
             'lot_id' => $lot->id,
-            'user_id' => Auth::id(),
-            'price' => $lot->startingPrice,
-            'pathImage' => $lot->pathImage,
+            'bet_on_lot' => $lot->startingPrice,
         ]);
+
+        $lot->offer()->save($offer);
         session()->flash('success_message', 'Лот успешно выставлен!');
         $lot->update();
     }

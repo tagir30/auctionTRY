@@ -16,10 +16,8 @@ class CreateOffersTable extends Migration
         Schema::create('offers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lot_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id');
             $table->unsignedBigInteger('user_id_bet')->default(0)->nullable();
-            $table->bigInteger('price');
-            $table->string('pathImage');
+            $table->bigInteger('bet_on_lot');
 
             $table->timestamps();
         });
