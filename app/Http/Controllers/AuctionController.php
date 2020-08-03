@@ -19,11 +19,10 @@ class AuctionController extends Controller
         $lots = [];
 
         if (auth()->check()) {
-            $lots = Lot::where('user_id', '!=', auth()->id())->with('offer')->paginate();//Чтобы не отображать свои лоты
+            $lots = Lot::where('user_id', '!=', auth()->id())->where('status', 1)->with('offer')->paginate();//Чтобы не отображать свои лоты
         } else {
-            $lots = Lot::with('offer')->paginate();
+            $lots = Lot::where('status', 1)->with('offer')->paginate();
         }
-
         return view('auction.main', compact('lots'));
     }
 

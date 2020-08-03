@@ -33,6 +33,14 @@ Route::group([
 
 });
 
+Route::group([
+    'prefix' => 'offers',
+], function(){
+    Route::get('/', 'AuctionController@index')->name('offers.index');
+    Route::get('/{offer}', 'AuctionController@index')->name('offers.show');
 
-//Route::resource('/lots', 'LotController')->middleware('auth');
-Route::resource('/offers', 'AuctionController');
+
+});
+
+
+
