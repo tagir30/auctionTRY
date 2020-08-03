@@ -5,9 +5,7 @@ namespace App\Service;
 
 
 use App\Jobs\ProcessLotCancel;
-use App\Lot;
 use App\Offer;
-use Illuminate\Support\Facades\Auth;
 
 class LotService
 {
@@ -23,17 +21,14 @@ class LotService
         return $path;
     }
 
-    public function addOrRemoveToAuction(int $id)
+    public function addOrRemoveToAuction($lot)
     {
-
-        $lot = Lot::findOrFail($id);
         if ($lot->status && request()->has('lotRemove')) {//Мб вынести условия в отделюную функцию...
             $this->removeLotFromAuction($lot);
 
         } elseif (!$lot->status && request()->has('lotAdd')) {
             $this->addLotToAuction($lot);
         }
-
     }
 
     private function removeLotFromAuction($lot)//Нужно дописать вычисление ставки итоговой

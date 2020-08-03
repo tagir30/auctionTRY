@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LotRequest;
-use App\Jobs\ProcessLotCancel;
 use App\Lot;
 use App\Service\LotService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -67,24 +67,25 @@ class LotController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param Lot $lot
      * @return void
+     * @throws AuthorizationException
      */
-    public function show($id)
+    public function show(Lot $lot)
     {
-        $lot = Lot::findOrFail($id);
+        $this->authorize('view', $lot);
         return view('lots.show', compact('lot'));
     }
 
     /**
      *
      *
-     * @param int $id
+     * @param Lot $lot
      * @return Response
      */
-    public function edit($id)
+    public function edit(Lot $lot)
     {
-        $lot = Lot::findOrFail($id);
+
         return view('lots.edit', compact('lot'));
     }
 
@@ -92,23 +93,27 @@ class LotController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int $id
+     * @param Lot $lot
      * @return Response
+     * @throws AuthorizationException
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Lot $lot)
     {
-        $this->lotService->addOrRemoveToAuction($id);
+        $this->authorize('update', $lot);
+        $this->lotService->addOrRemoveToAuction($lot);
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param Lot $lot
      * @return void
+     * @throws AuthorizationException
      */
-    public function destroy($id)//Дописать условия при нахождения лота на аукционне и т.д
+    public function destroy(Lot $lot)//Дописать условия при нахождения лота на аукционне и т.д
     {
+        $this->authorize('delete', $lot);
 //        $lot = Lot::findOrFail($id);
 //
 //        if (Auth::id() === $lot->user_id) {
