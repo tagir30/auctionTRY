@@ -19,7 +19,10 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 //
-// Vue.component('timer-component', require('./components/TimerComponent.vue').default);
+Vue.component('lot-component', require('./components/Lot.vue').default);
+Vue.component('lots-comp', require('./components/Lots.vue').default);
+Vue.component('fast-bet', require('./components/FastBetComponent.vue').default);
+
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

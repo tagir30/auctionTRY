@@ -18,7 +18,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{asset('css/modal.css')}}">
+
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">

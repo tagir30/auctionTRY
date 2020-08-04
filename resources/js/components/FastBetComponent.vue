@@ -1,5 +1,6 @@
 <template>
     <div>
+
     <!-- Button to Open the Modal -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
         Сделать быструю ставку
@@ -18,13 +19,13 @@
 
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <label for="bet">Введите ставку:</label>
-                    <input type="text" id="bet" v-model="bet">
+                    <label>Введите ставку:</label>
+                    <input type="text" v-model="bet">
                 </div>
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" @click="addBet">Поставить</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" @click="update">Поставить</button>
                 </div>
 
             </div>
@@ -41,8 +42,24 @@
             }
         },
         methods:{
-            addBet: function () {
-
+            async update() {
+                try {
+                    const el = document.getElementById('bet_id');
+                    const offer = el.value;
+                    const response = await window.axios({
+                        method: 'put',
+                        url: `/api/offers/${offer}`,
+                        data: {
+                            bet_on_lot: this.bet,
+                        }});
+                    // const response = await window.axios.put(`/api/offers/${offer}`,{
+                    //     bet: this.bet,
+                    //     _method: ''
+                    // });
+                    console.log(response);
+                }catch (e) {
+                    console.error(e)
+                }
 
             }
         }
