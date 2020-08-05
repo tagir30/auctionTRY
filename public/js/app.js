@@ -2075,7 +2075,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     time: function time() {
-      console.log(this.created_at);
       var date = new Date(this.created_at);
       date.setDate(date.getHours() + this.timeLeft);
       return date;

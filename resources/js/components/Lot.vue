@@ -39,7 +39,6 @@
         },
         computed:{
             time:function () {
-                console.log(this.created_at);
                 let date = new Date(this.created_at);
                 date.setDate(date.getHours() + this.timeLeft);
                 return date;

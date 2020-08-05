@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LotRequest;
+use App\Http\Requests\StoreLotRequest;
 use App\Lot;
 use App\Service\LotService;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -47,7 +47,7 @@ class LotController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(LotRequest $request)
+    public function store(StoreLotRequest $request)
     {
 
         $path = $this->lotService->handleUploadedImage($request->file('lot.image'));
