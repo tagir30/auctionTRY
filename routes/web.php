@@ -37,7 +37,7 @@ Route::group([
     'prefix' => 'offers',
 ], function(){
     Route::get('/', 'AuctionController@index')->name('offers.index');
-    Route::get('/{offer}', 'AuctionController@index')->name('offers.show');
+    Route::get('/{offer}', 'AuctionController@show')->name('offers.show');
 
 
 });

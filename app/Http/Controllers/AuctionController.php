@@ -46,7 +46,7 @@ class AuctionController extends Controller
     public function show($offer)
     {
         $offer = Offer::findOrFail($offer);
-        dd($offer->lot);
+        return view('auction.show', compact('offer'));
     }
 
     /**

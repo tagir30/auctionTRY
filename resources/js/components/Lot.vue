@@ -1,30 +1,49 @@
 <template>
-    <div class="col-md-4">
-        <div class="card mb-4 box-shadow">
-            <img class="card-img-top"
-                 data-holder-rendered="true"
-                 :src="pathImage"
-                 style="height: 225px; width: 100%; display: block;">
-            <div class="card-body">
-                <p class="card-text">
-                <h1>{{name}}</h1>
-                <h2>{{description}}</h2>
-                <h3>{{bet_on_lot}} рублей</h3>
-                <h3>{{timeLeft}} часов</h3>
+        <tr>
+            <td>
+                <a :href = "showOffer">
+                    <img data-holder-rendered="true"
+                         :src="pathImage"
+                         style="height: 90px; width: 90px; display: block;">
+                </a>
+            </td>
+            <td>{{name}}</td>
+            <td>{{description}}</td>
+            <td>{{bet_on_lot}} рублей</td>
+            <td>{{time}}</td>
+        </tr>
 
-            </div>
-        </div>
+<!--    <div class="col-md-4">-->
+<!--&lt;!&ndash;        <div class="card mb-4 box-shadow">&ndash;&gt;-->
+<!--            <img class="card-img-top"-->
+<!--                 data-holder-rendered="true"-->
+<!--                 :src="pathImage"-->
+<!--                 style="height: 225px; width: 100%; display: block;">-->
+<!--            <div class="card-body">-->
 
-    </div>
+
+<!--            </div>-->
+<!--        </div>-->
+
+<!--    </div>-->
 </template>
 
 <script>
     export default {
-        props: ['offer_id', 'name', 'description', 'bet_on_lot', 'timeLeft', 'pathImage'],
+        props: ['offer_id', 'name', 'description', 'bet_on_lot', 'timeLeft', 'pathImage', 'created_at'],
         data() {
             return {
+                showOffer: `/offers/${this.offer_id}`,
             }
 
+        },
+        computed:{
+            time:function () {
+                console.log(this.created_at);
+                let date = new Date(this.created_at);
+                date.setDate(date.getHours() + this.timeLeft);
+                return date;
+            }
         }
     }
 </script>

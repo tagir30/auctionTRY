@@ -1964,10 +1964,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      bet: 0
+      bet: 0,
+      errors: []
     };
   },
   methods: {
@@ -1994,25 +2002,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 5:
                 response = _context.sent;
-                // const response = await window.axios.put(`/api/offers/${offer}`,{
-                //     bet: this.bet,
-                //     _method: ''
-                // });
-                console.log(response);
-                _context.next = 12;
+                _context.next = 11;
                 break;
 
-              case 9:
-                _context.prev = 9;
+              case 8:
+                _context.prev = 8;
                 _context.t0 = _context["catch"](0);
-                console.error(_context.t0);
 
-              case 12:
+                _context.t0.response.data.errors.bet_on_lot.forEach(function (error) {
+                  _this.errors.push(error);
+                }); //Как обрабатывать не отдельно :(
+
+
+              case 11:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[0, 9]]);
+        }, _callee, null, [[0, 8]]);
       }))();
     }
   }
@@ -2049,10 +2056,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['offer_id', 'name', 'description', 'bet_on_lot', 'timeLeft', 'pathImage'],
+  props: ['offer_id', 'name', 'description', 'bet_on_lot', 'timeLeft', 'pathImage', 'created_at'],
   data: function data() {
-    return {};
+    return {
+      showOffer: "/offers/".concat(this.offer_id)
+    };
+  },
+  computed: {
+    time: function time() {
+      console.log(this.created_at);
+      var date = new Date(this.created_at);
+      date.setDate(date.getHours() + this.timeLeft);
+      return date;
+    }
   }
 });
 
@@ -2098,6 +2125,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 function Lot(_ref) {
   var name = _ref.name,
       description = _ref.description,
@@ -2105,13 +2146,15 @@ function Lot(_ref) {
       pathImage = _ref.pathImage,
       _ref$offer = _ref.offer,
       bet_on_lot = _ref$offer.bet_on_lot,
-      offer_id = _ref$offer.id;
+      offer_id = _ref$offer.id,
+      created_at = _ref$offer.created_at;
   this.offer_id = offer_id;
   this.name = name;
   this.description = description;
   this.bet_on_lot = bet_on_lot;
   this.timeLeft = timeLeft;
   this.pathImage = 'http://auction/storage/' + pathImage;
+  this.created_at = created_at;
 }
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -38490,6 +38533,22 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _vm.errors.length
+      ? _c("p", [
+          _c("b", [_vm._v("Пожалуйста исправте указанные ошибки")]),
+          _vm._v(" "),
+          _c(
+            "ul",
+            _vm._l(_vm.errors, function(error) {
+              return _c("li", [
+                _vm._v("\n        " + _vm._s(error) + "\n        ")
+              ])
+            }),
+            0
+          )
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _c(
       "button",
       {
@@ -38555,12 +38614,12 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header" }, [
-      _c("h4", { staticClass: "modal-title" }, [_vm._v("Быстрая ставка")]),
+      _c("h2", { staticClass: "modal-title" }, [_vm._v("Быстрая ставка")]),
       _vm._v(" "),
       _c(
         "button",
         {
-          staticClass: "close",
+          staticClass: "close btn",
           attrs: { type: "button", "data-dismiss": "modal" }
         },
         [_vm._v("×")]
@@ -38589,25 +38648,23 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "col-md-4" }, [
-    _c("div", { staticClass: "card mb-4 box-shadow" }, [
-      _c("img", {
-        staticClass: "card-img-top",
-        staticStyle: { height: "225px", width: "100%", display: "block" },
-        attrs: { "data-holder-rendered": "true", src: _vm.pathImage }
-      }),
-      _vm._v(" "),
-      _c("div", { staticClass: "card-body" }, [
-        _c("p", { staticClass: "card-text" }),
-        _c("h1", [_vm._v(_vm._s(_vm.name))]),
-        _vm._v(" "),
-        _c("h2", [_vm._v(_vm._s(_vm.description))]),
-        _vm._v(" "),
-        _c("h3", [_vm._v(_vm._s(_vm.bet_on_lot) + " рублей")]),
-        _vm._v(" "),
-        _c("h3", [_vm._v(_vm._s(_vm.timeLeft) + " часов")])
+  return _c("tr", [
+    _c("td", [
+      _c("a", { attrs: { href: _vm.showOffer } }, [
+        _c("img", {
+          staticStyle: { height: "90px", width: "90px", display: "block" },
+          attrs: { "data-holder-rendered": "true", src: _vm.pathImage }
+        })
       ])
-    ])
+    ]),
+    _vm._v(" "),
+    _c("td", [_vm._v(_vm._s(_vm.name))]),
+    _vm._v(" "),
+    _c("td", [_vm._v(_vm._s(_vm.description))]),
+    _vm._v(" "),
+    _c("td", [_vm._v(_vm._s(_vm.bet_on_lot) + " рублей")]),
+    _vm._v(" "),
+    _c("td", [_vm._v(_vm._s(_vm.time))])
   ])
 }
 var staticRenderFns = []
@@ -38636,43 +38693,73 @@ var render = function() {
     "div",
     { staticClass: "row" },
     [
-      _vm._l(_vm.lots, function(lot) {
-        return _c(
-          "lot-component",
-          _vm._b({ key: lot.offer_id }, "lot-component", lot, false)
-        )
-      }),
-      _vm._v(" "),
       _c(
-        "div",
-        { staticClass: "d-flex justify-content-between align-items-center" },
-        [
-          _c(
-            "select",
-            { staticClass: "form-control", attrs: { id: "bet_id" } },
-            _vm._l(_vm.lots, function(lot) {
-              return _c(
-                "option",
-                _vm._b(
-                  { key: lot.offer_id, domProps: { value: lot.offer_id } },
-                  "option",
-                  _vm.lots,
-                  false
-                ),
-                [_vm._v(_vm._s(lot.name))]
+        "select",
+        { staticClass: "form-control", attrs: { id: "bet_id" } },
+        _vm._l(_vm.lots, function(lot) {
+          return _c(
+            "option",
+            _vm._b(
+              { key: lot.offer_id, domProps: { value: lot.offer_id } },
+              "option",
+              _vm.lots,
+              false
+            ),
+            [
+              _vm._v(
+                "Название: " +
+                  _vm._s(lot.name) +
+                  ", Описание: " +
+                  _vm._s(lot.description)
               )
-            }),
-            0
-          ),
-          _vm._v(" "),
-          _c("div", { staticClass: "btn-group" }, [_c("fast-bet")], 1)
-        ]
-      )
+            ]
+          )
+        }),
+        0
+      ),
+      _vm._v(" "),
+      _c("fast-bet"),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("table", { staticClass: "table table-bordered" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.lots, function(lot) {
+            return _c(
+              "lot-component",
+              _vm._b({ key: lot.offer_id }, "lot-component", lot, false)
+            )
+          }),
+          1
+        )
+      ])
     ],
-    2
+    1
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Фото")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Название лота")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Описание")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Ставка")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Дата закрытия принятия ставок")])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 

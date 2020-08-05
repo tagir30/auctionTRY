@@ -1,6 +1,13 @@
 <template>
     <div>
-
+    <p v-if="errors.length">
+        <b>Пожалуйста исправте указанные ошибки</b>
+        <ul>
+            <li v-for="error in errors">
+            {{error}}
+            </li>
+        </ul>
+    </p>
     <!-- Button to Open the Modal -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
         Сделать быструю ставку
@@ -13,8 +20,8 @@
 
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Быстрая ставка</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h2 class="modal-title">Быстрая ставка</h2>
+                    <button type="button" class="close btn" data-dismiss="modal">&times;</button>
                 </div>
 
                 <!-- Modal body -->
@@ -39,6 +46,7 @@
         data() {
             return {
                 bet: 0,
+                errors: [],
             }
         },
         methods:{
@@ -52,13 +60,10 @@
                         data: {
                             bet_on_lot: this.bet,
                         }});
-                    // const response = await window.axios.put(`/api/offers/${offer}`,{
-                    //     bet: this.bet,
-                    //     _method: ''
-                    // });
-                    console.log(response);
-                }catch (e) {
-                    console.error(e)
+                }catch (error) {
+                    error.response.data.errors.bet_on_lot.forEach(error =>{
+                        this.errors.push(error)
+                    });//Как обрабатывать не отдельно :(
                 }
 
             }
