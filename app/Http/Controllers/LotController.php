@@ -51,7 +51,6 @@ class LotController extends Controller
     {
 
         $path = $this->lotService->handleUploadedImage($request->file('lot.image'));
-
         Lot::create([
             'name' => $request->lot['nameLot'],
             'description' => $request->lot['description'],

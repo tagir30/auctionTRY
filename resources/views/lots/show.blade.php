@@ -13,7 +13,7 @@
                 <h2>Название лота: {{$lot->name}}</h2>
                 <h2>Описание лота: {{$lot->description}}</h2>
                 <h2>Начальная ставка: {{$lot->startingPrice}}</h2>{{--Формат..--}}
-                <h2>Время выставления: {{$lot->timeLeft}}</h2>
+                <h2>Дата окончания торгов: {{$lot->timeLeft}}</h2>
                 <form action="{{route('lots.destroy', ['lot' => $lot->id])}}" method="POST">
                     @method('DELETE')
                     @csrf

@@ -20,7 +20,7 @@ class CreateLotsTable extends Migration
             $table->bigInteger('startingPrice');
             $table->string('pathImage');
             $table->string('description');
-            $table->integer('timeLeft')->default(6);
+            $table->date('timeLeft');
             $table->integer('status')->default(0);
 
             $table->foreignId('user_id');

@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Jobs\ProcessLotCancel;
 use App\Offer;
+use Carbon\Carbon;
 
 class LotService
 {
@@ -41,8 +42,11 @@ class LotService
 
     private function addLotToAuction($lot)
     {
+        $date = Carbon::create($lot->timeLeft);
+        $deferenceHours = $date->diffInHours(now());
         $lot->status = 1;
-        ProcessLotCancel::dispatch($lot)->delay(now()->addHours($lot->timeLeft));//Для проверки можно заменить на addMinutes addHours
+
+        ProcessLotCancel::dispatch($lot)->delay($deferenceHours);//Только это придумал :D
         $offer = new Offer([
             'lot_id' => $lot->id,
             'bet_on_lot' => $lot->startingPrice,

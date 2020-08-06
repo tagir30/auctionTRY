@@ -31,7 +31,7 @@
                                 <h1>{{$lot->name}}</h1>
                                 <h2>{{$lot->description}}</h2>
                                 <h3>{{$lot->startingPrice}} рублей</h3>
-                                <h3>{{$lot->timeLeft}} часов</h3>
+                                <h3>{{$lot->timeLeft}}</h3>
                                 <p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">

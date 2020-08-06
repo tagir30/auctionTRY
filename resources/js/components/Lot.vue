@@ -10,7 +10,7 @@
             <td>{{name}}</td>
             <td>{{description}}</td>
             <td>{{bet_on_lot}} рублей</td>
-            <td>{{time}}</td>
+            <td>{{timeLeft}}</td>
         </tr>
 
 <!--    <div class="col-md-4">-->
@@ -37,12 +37,6 @@
             }
 
         },
-        computed:{
-            time:function () {
-                let date = new Date(this.created_at);
-                date.setDate(date.getHours() + this.timeLeft);
-                return date;
-            }
-        }
+
     }
 </script>

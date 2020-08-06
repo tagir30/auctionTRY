@@ -2086,13 +2086,6 @@ __webpack_require__.r(__webpack_exports__);
     return {
       showOffer: "/offers/".concat(this.offer_id)
     };
-  },
-  computed: {
-    time: function time() {
-      var date = new Date(this.created_at);
-      date.setDate(date.getHours() + this.timeLeft);
-      return date;
-    }
   }
 });
 
@@ -38692,7 +38685,7 @@ var render = function() {
     _vm._v(" "),
     _c("td", [_vm._v(_vm._s(_vm.bet_on_lot) + " рублей")]),
     _vm._v(" "),
-    _c("td", [_vm._v(_vm._s(_vm.time))])
+    _c("td", [_vm._v(_vm._s(_vm.timeLeft))])
   ])
 }
 var staticRenderFns = []
@@ -38784,7 +38777,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Ставка")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Дата закрытия принятия ставок")])
+        _c("th", [_vm._v("Дата закрытия ставок")])
       ])
     ])
   }
