@@ -40,13 +40,6 @@
                 <label>Дата закрытия торгов</label>
                 <div class="input-group">
                     <input type="date" name="lot[timeLeft]" value="{{old('lot.timeLeft')}}">
-{{--                    <select name="lot[timeLeft]">--}}
-{{--                        <option value="2">2 часа</option>--}}
-{{--                        <option value="4">4 часа</option>--}}
-{{--                        <option value="6">6 часов</option>--}}
-{{--                        <option value="8">8 часов</option>--}}
-{{--                        <option value="10">10 часов</option>--}}
-{{--                    </select>--}}
                 </div>
             </div>
             <div class="mb-3">

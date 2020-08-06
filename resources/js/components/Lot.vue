@@ -11,6 +11,8 @@
             <td>{{description}}</td>
             <td>{{bet_on_lot}} рублей</td>
             <td>{{timeLeft}}</td>
+            <a :href = "showOffer"><button class="btn btn-primary">Посмотреть поближе</button></a>
+
         </tr>
 
 <!--    <div class="col-md-4">-->

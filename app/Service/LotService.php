@@ -35,7 +35,7 @@ class LotService
     private function removeLotFromAuction($lot)//Нужно дописать вычисление ставки итоговой
     {
         $lot->status = 0;//Возможно есть способ удалить из очереди... Есть вариант сохранять в бд uuid
-        Offer::findOrFail($lot->id)->delete();
+        Offer::where('lot_id', $lot->id)->firstOrFail()->delete();
         session()->flash('success_message', 'Лот успешно снят с аукционна!');
         $lot->update();
     }

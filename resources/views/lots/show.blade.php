@@ -3,13 +3,13 @@
 @section('content')
     <div class="container">
         <div class="row no-gutters">
-            <div class="col-12 col-sm-6 col-md-8">
+            <div class="col-12 col-sm-6 col-md-5">
                 <img class="card-img-top"
-                     style="height: 500px; width: 500px; display: block;"
+                     style="height: 300px; width: 300px; display: block;"
                      src="{{asset('/storage/' . $lot->pathImage)}}"
                      data-holder-rendered="true">
             </div>
-            <div class="col-6 col-md-4">
+            <div class="col-6 col-md-7">
                 <h2>Название лота: {{$lot->name}}</h2>
                 <h2>Описание лота: {{$lot->description}}</h2>
                 <h2>Начальная ставка: {{$lot->startingPrice}}</h2>{{--Формат..--}}
@@ -21,7 +21,7 @@
                 </form>
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
-                        <form action="{{route('lots.update', ['lot' => $lot->id])}}" method="post">
+                        <form action="{{route('lots.update', ['lot' => $lot->id])}}" method="post" hidden>
                             @csrf
                             @method('PATCH')
                             @if(!$lot->status)
@@ -35,6 +35,7 @@
                                     Снять с аукциона
                                 </button>
                         @endif
+                        </form>
             </div>
         </div>
 

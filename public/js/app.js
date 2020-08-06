@@ -2080,6 +2080,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['offer_id', 'name', 'description', 'bet_on_lot', 'timeLeft', 'pathImage', 'created_at'],
   data: function data() {
@@ -2108,6 +2110,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+//
 //
 //
 //
@@ -38685,7 +38688,13 @@ var render = function() {
     _vm._v(" "),
     _c("td", [_vm._v(_vm._s(_vm.bet_on_lot) + " рублей")]),
     _vm._v(" "),
-    _c("td", [_vm._v(_vm._s(_vm.timeLeft))])
+    _c("td", [_vm._v(_vm._s(_vm.timeLeft))]),
+    _vm._v(" "),
+    _c("a", { attrs: { href: _vm.showOffer } }, [
+      _c("button", { staticClass: "btn btn-primary" }, [
+        _vm._v("Посмотреть поближе")
+      ])
+    ])
   ])
 }
 var staticRenderFns = []
@@ -38777,7 +38786,9 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Ставка")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Дата закрытия ставок")])
+        _c("th", [_vm._v("Дата закрытия ставок")]),
+        _vm._v(" "),
+        _c("th")
       ])
     ])
   }

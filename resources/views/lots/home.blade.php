@@ -44,6 +44,9 @@
                                                     <button type="submit" onclick="return confirm('Вы уверены?')" class="btn btn-danger">
                                                         Выставить на аукцион
                                                     </button>
+                                                <a href="{{route('lots.show', ['lot' => $lot->id])}}">
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                                </a>
                                         @else
                                                 <input type="hidden" name="lotRemove">
                                                 <button type="submit" onclick="return confirm('Вы уверены?')" class="btn btn-danger">
@@ -51,9 +54,7 @@
                                                 </button>
                                         @endif
                                         </form>
-                                        <a href="{{route('lots.show', ['lot' => $lot->id])}}">
-                                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                        </a>
+
                                     </div>
                                 </div>
                             </div>
