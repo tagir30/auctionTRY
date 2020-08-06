@@ -1,16 +1,17 @@
 <template>
     <div class="row">
 
-        <select class="form-control" id = 'bet_id'>
-        <option
-            v-bind="lots"
-            v-for = "lot in lots"
-            :value = 'lot.offer_id'
-            :key = 'lot.offer_id'
-        >Название: {{lot.name}}, Описание: {{lot.description}}</option>
+        <select class="form-control" id='bet_id'>
+            <option
+                :key='lot.offer_id'
+                :value='lot.offer_id'
+                v-bind="lots"
+                v-for="lot in lots"
+            >Название: {{lot.name}}, Описание: {{lot.description}}
+            </option>
         </select>
 
-        <fast-bet></fast-bet>
+        <fast-bet @bet="onBet"></fast-bet>
 
 
         <br>
@@ -40,7 +41,8 @@
             bet_on_lot,
             id: offer_id,
             created_at,
-    },}) {
+        },
+                 }) {
         this.offer_id = offer_id;
         this.name = name;
         this.description = description;
@@ -61,12 +63,17 @@
         },
         methods: {
             async read() {
-
                 const {data} = await window.axios.get('/api/offers');
                 data.forEach(lot => this.lots.push(new Lot(lot)));
-
-
             },
+            onBet(data) {
+                this.lots.map(lot => {
+                    if (lot.offer_id == data.offer_id) {
+                        lot.bet_on_lot = data.bet_on_lot;
+                    }
+                });
+
+            }
         }
     }
 </script>

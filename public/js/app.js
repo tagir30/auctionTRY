@@ -1971,11 +1971,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       bet: 0,
-      errors: []
+      errors: [],
+      flash_success: []
     };
   },
   methods: {
@@ -1989,9 +1994,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context.prev = _context.next) {
               case 0:
                 _context.prev = 0;
+                _this.errors = [];
+                _this.flash_success = [];
                 el = document.getElementById('bet_id');
                 offer = el.value;
-                _context.next = 5;
+                _context.next = 7;
                 return window.axios({
                   method: 'put',
                   url: "/api/offers/".concat(offer),
@@ -2000,13 +2007,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }
                 });
 
-              case 5:
+              case 7:
                 response = _context.sent;
-                _context.next = 11;
+
+                _this.$emit('bet', {
+                  offer_id: offer,
+                  bet_on_lot: _this.bet
+                });
+
+                _this.flash_success = 'Ставка принята.';
+                _context.next = 15;
                 break;
 
-              case 8:
-                _context.prev = 8;
+              case 12:
+                _context.prev = 12;
                 _context.t0 = _context["catch"](0);
 
                 _context.t0.response.data.errors.bet_on_lot.forEach(function (error) {
@@ -2014,12 +2028,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 }); //Как обрабатывать не отдельно :(
 
 
-              case 11:
+              case 15:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[0, 8]]);
+        }, _callee, null, [[0, 12]]);
       }))();
     }
   }
@@ -2138,6 +2152,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
 function Lot(_ref) {
   var name = _ref.name,
       description = _ref.description,
@@ -2193,6 +2208,13 @@ function Lot(_ref) {
           }
         }, _callee);
       }))();
+    },
+    onBet: function onBet(data) {
+      this.lots.map(function (lot) {
+        if (lot.offer_id == data.offer_id) {
+          lot.bet_on_lot = data.bet_on_lot;
+        }
+      });
     }
   }
 });
@@ -38533,18 +38555,25 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _vm.errors.length
-      ? _c("p", [
+      ? _c("div", [
           _c("b", [_vm._v("Пожалуйста исправте указанные ошибки")]),
           _vm._v(" "),
           _c(
             "ul",
+            { staticClass: "alert-danger" },
             _vm._l(_vm.errors, function(error) {
               return _c("li", [
-                _vm._v("\n        " + _vm._s(error) + "\n        ")
+                _vm._v("\n            " + _vm._s(error) + "\n        ")
               ])
             }),
             0
           )
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.flash_success.length
+      ? _c("div", { staticClass: "alert alert-success" }, [
+          _c("strong", [_vm._v(_vm._s(_vm.flash_success))])
         ])
       : _vm._e(),
     _vm._v(" "),
@@ -38553,12 +38582,12 @@ var render = function() {
       {
         staticClass: "btn btn-primary",
         attrs: {
-          type: "button",
+          "data-target": "#myModal",
           "data-toggle": "modal",
-          "data-target": "#myModal"
+          type: "button"
         }
       },
-      [_vm._v("\n    Сделать быструю ставку\n")]
+      [_vm._v("\n        Сделать быструю ставку\n    ")]
     ),
     _vm._v(" "),
     _c("div", { staticClass: "modal", attrs: { id: "myModal" } }, [
@@ -38596,10 +38625,10 @@ var render = function() {
               "button",
               {
                 staticClass: "btn btn-danger",
-                attrs: { type: "button", "data-dismiss": "modal" },
+                attrs: { "data-dismiss": "modal", type: "button" },
                 on: { click: _vm.update }
               },
-              [_vm._v("Поставить")]
+              [_vm._v("Поставить\n                    ")]
             )
           ])
         ])
@@ -38619,7 +38648,7 @@ var staticRenderFns = [
         "button",
         {
           staticClass: "close btn",
-          attrs: { type: "button", "data-dismiss": "modal" }
+          attrs: { "data-dismiss": "modal", type: "button" }
         },
         [_vm._v("×")]
       )
@@ -38709,7 +38738,8 @@ var render = function() {
                 "Название: " +
                   _vm._s(lot.name) +
                   ", Описание: " +
-                  _vm._s(lot.description)
+                  _vm._s(lot.description) +
+                  "\n        "
               )
             ]
           )
@@ -38717,7 +38747,7 @@ var render = function() {
         0
       ),
       _vm._v(" "),
-      _c("fast-bet"),
+      _c("fast-bet", { on: { bet: _vm.onBet } }),
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
