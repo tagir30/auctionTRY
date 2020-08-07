@@ -26,7 +26,7 @@ Route::group([
     Route::get('/', 'LotController@index')->name('lots.index');
     Route::post('/', 'LotController@store')->name('lots.store');
     Route::get('/create', 'LotController@create')->name('lots.create');
-    Route::patch('/{lot}', 'LotController@update')->name('lots.update') ;
+    Route::patch('/{lot}', 'LotController@update')->name('lots.update');
     Route::get('/{lot}', 'LotController@show')->name('lots.show');
     Route::get('/{lot}/edit', 'LotController@edit')->name('lots.edit');
     Route::delete('/{lot}', 'LotController@destroy')->name('lots.destroy');

@@ -3,7 +3,15 @@
 
 @section('content')
     <div class="container">
-
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{$error}}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         @if (session()->has('success_message'))
             <div class="spacer"></div>
             <div class="alert alert-success">
@@ -40,7 +48,7 @@
                                             @method('PATCH')
                                         @if(!$lot->status)
 
-                                                <input type="hidden" name="lotAdd">
+                                                <input type="hidden" name="action" value = "addToAuction">
                                                     <button type="submit" onclick="return confirm('Вы уверены?')" class="btn btn-danger">
                                                         Выставить на аукцион
                                                     </button>
@@ -48,7 +56,7 @@
                                                     <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                                                 </a>
                                         @else
-                                                <input type="hidden" name="lotRemove">
+                                                <input type="hidden" name="action" value="removeFromAuction">
                                                 <button type="submit" onclick="return confirm('Вы уверены?')" class="btn btn-danger">
                                                     Снять с аукциона
                                                 </button>

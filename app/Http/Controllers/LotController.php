@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreLotRequest;
+use App\Http\Requests\UpdateLotRequest;
 use App\Lot;
+use App\Service\ImageService;
 use App\Service\LotService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -13,9 +15,11 @@ use Illuminate\Support\Facades\Auth;
 class LotController extends Controller
 {
     private $lotService;
+    private $imageService;
 
-    public function __construct(LotService $lotService)
+    public function __construct(LotService $lotService, ImageService $imageService)
     {
+        $this->imageService = $imageService;
         $this->lotService = $lotService;
 
     }
@@ -44,13 +48,14 @@ class LotController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreLotRequest $request
      * @return Response
      */
     public function store(StoreLotRequest $request)
     {
+        //По сути можно вынести в тот же сервис...(конечно можно избавиться от зависимостей), но не станет ли сервис god :D
+        $path = $this->imageService->handleUploadedImage($request->file('lot.image'));
 
-        $path = $this->lotService->handleUploadedImage($request->file('lot.image'));
         Lot::create([
             'name' => $request->lot['nameLot'],
             'description' => $request->lot['description'],
@@ -91,16 +96,17 @@ class LotController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param UpdateLotRequest $request
      * @param Lot $lot
      * @return Response
      * @throws AuthorizationException
      */
-    public function update(Request $request, Lot $lot)
-    {
+    public function update(UpdateLotRequest $request, Lot $lot)//не могу придумать нормальный реквес...
+    {//мб стоит отделить выставление на аукцион и update
         $this->authorize('update', $lot);
-        $this->lotService->addOrRemoveToAuction($lot);
-        return back();
+
+        $this->lotService->mainSwitch($lot);//как от этого избавиться...
+        return redirect()->route('lots.index');
     }
 
     /**

@@ -7,31 +7,40 @@ namespace App\Service;
 use App\Jobs\ProcessLotCancel;
 use App\Offer;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class LotService
 {
+    const ADD_LOT = 'addToAuction';
+    const REMOVE_LOT = 'removeFromAuction';
+    const UPDATE_LOT = 'update';
 
+    private $imageService;
 
-    public function handleUploadedImage($image): string
+    public function __construct(ImageService $imageService)
     {
-        if (!is_null($image)) {
-            $path = $image->store('uploads', 'public');
-        } else {
-            $path = config('constants.PATH_DEFAULT_IMAGE');//Как-то это поправить надо...
-        }
-        return $path;
+        $this->imageService = $imageService;
     }
 
-    public function addOrRemoveToAuction($lot)
+
+    /**
+     * @param $lot
+     */
+    public function mainSwitch($lot)//Как избавиться от этой конструкции :((
     {
-        if ($lot->status && request()->has('lotRemove')) {//Мб вынести условия в отделюную функцию...
+        if ($lot->status && request()->action == self::REMOVE_LOT) {//Мб вынести условия в отделюную функцию...
             $this->removeLotFromAuction($lot);
-
-        } elseif (!$lot->status && request()->has('lotAdd')) {
+        } elseif (!$lot->status && request()->action === self::ADD_LOT) {
             $this->addLotToAuction($lot);
+        } elseif (request()->action === self::UPDATE_LOT) {
+            $this->update($lot);
         }
+
     }
 
+    /**
+     * @param $lot
+     */
     private function removeLotFromAuction($lot)//Нужно дописать вычисление ставки итоговой
     {
         $lot->status = 0;//Возможно есть способ удалить из очереди... Есть вариант сохранять в бд uuid
@@ -40,6 +49,9 @@ class LotService
         $lot->update();
     }
 
+    /**
+     * @param $lot
+     */
     private function addLotToAuction($lot)
     {
         $date = Carbon::create($lot->timeLeft);
@@ -57,5 +69,20 @@ class LotService
         $lot->update();
     }
 
+    private function update($lot)
+    {
+
+        $path = $this->imageService->handleUploadedImage(request()->file('lot.image'));
+        $lot->update([
+            'name' => request()->lot['nameLot'],
+            'description' => request()->lot['description'],
+            'startingPrice' => request()->lot['startingPrice'],
+            'timeLeft' => request()->lot['timeLeft'],
+            'pathImage' => $path,
+            'user_id' => Auth::id(),
+        ]);
+        session()->flash('success_message', 'Лот успешно обновлён!');
+
+    }
 
 }
