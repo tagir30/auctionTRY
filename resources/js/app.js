@@ -18,10 +18,12 @@ window.Vue = require('vue');
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-//
-Vue.component('lot-component', require('./components/Lot.vue').default);
-Vue.component('lots-comp', require('./components/Lots.vue').default);
-Vue.component('fast-bet', require('./components/FastBetComponent.vue').default);
+
+Vue.component('lot-show-component', require('./components/Auction/LotShow.vue').default);
+Vue.component('lot-table-component', require('./components/Auction/LotTable.vue').default);
+Vue.component('lots-component', require('./components/Auction/Lots.vue').default);
+Vue.component('fast-bet', require('./components/Auction/FastBetComponent.vue').default);
+
 
 
 /**

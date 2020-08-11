@@ -27,6 +27,7 @@
         <br>
         @isset($lots)
             <div class="row">
+
                 @foreach($lots as $lot)
                     <div class="col-md-4">
                         <div class="card mb-4 box-shadow">
@@ -70,6 +71,7 @@
                     </div>
                 @endforeach
             </div>
+                {{$lots->links()}}
         @endisset
     </div>
 @endsection

@@ -27,4 +27,9 @@ class OfferController extends Controller
 
         return response(null, Response::HTTP_OK);
     }
+
+    public function show(Offer $offer){
+        $lot = Lot::with('offer')->findOrFail($offer->lot_id);
+        return response($lot->jsonSerialize(), Response::HTTP_OK);
+    }
 }

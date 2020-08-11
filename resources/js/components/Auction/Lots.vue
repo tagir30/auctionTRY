@@ -27,11 +27,11 @@
             </tr>
             </thead>
             <tbody>
-            <lot-component
+            <lot-table-component
                 :key='lot.offer_id'
                 v-bind="lot"
                 v-for="lot in lots"
-            ></lot-component>
+            ></lot-table-component>
             </tbody>
         </table>
 
@@ -59,8 +59,9 @@
                 lots: [],
             }
         },
-        created() {
+        mounted(){
             this.read();
+
         },
         methods: {
             async read() {

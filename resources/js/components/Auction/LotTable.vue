@@ -14,20 +14,6 @@
             <a :href = "showOffer"><button class="btn btn-primary">Посмотреть поближе</button></a>
 
         </tr>
-
-<!--    <div class="col-md-4">-->
-<!--&lt;!&ndash;        <div class="card mb-4 box-shadow">&ndash;&gt;-->
-<!--            <img class="card-img-top"-->
-<!--                 data-holder-rendered="true"-->
-<!--                 :src="pathImage"-->
-<!--                 style="height: 225px; width: 100%; display: block;">-->
-<!--            <div class="card-body">-->
-
-
-<!--            </div>-->
-<!--        </div>-->
-
-<!--    </div>-->
 </template>
 
 <script>

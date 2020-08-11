@@ -31,7 +31,7 @@ class LotController extends Controller
      */
     public function index()
     {
-        $lots = Lot::where('user_id', Auth::id())->paginate(5);
+        $lots = Lot::where('user_id', Auth::id())->paginate(10);
         return view('lots.home', compact('lots'));
     }
 
@@ -56,14 +56,14 @@ class LotController extends Controller
         //По сути можно вынести в тот же сервис...(конечно можно избавиться от зависимостей), но не станет ли сервис god :D
         $path = $this->imageService->handleUploadedImage($request->file('lot.image'));
 
-        Lot::create([
+        dd(Lot::create([
             'name' => $request->lot['nameLot'],
             'description' => $request->lot['description'],
             'startingPrice' => $request->lot['startingPrice'],
             'timeLeft' => $request->lot['timeLeft'],
             'pathImage' => $path,
             'user_id' => Auth::id(),
-        ]);
+        ]));
 
         return redirect()->route('lots.index')->with('success_message', 'Лот успешно создан!');
     }
