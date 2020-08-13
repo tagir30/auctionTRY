@@ -47,9 +47,10 @@
 
 <script>
     export default {
+        props:['user_id'],
         data() {
             return {
-                bet: 0,
+                bet: null,
                 errors: [],
                 flash_success: [],
             }
@@ -67,6 +68,7 @@
                         url: `/api/offers/${offer}`,
                         data: {
                             bet_on_lot: this.bet,
+                            user_id: this.user_id,
                         }
                     });
                     this.$emit('bet', {

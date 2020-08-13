@@ -1,17 +1,21 @@
 <template>
     <div class="row">
 
-        <select class="form-control" id='bet_id'>
+        <select class="form-control" id='bet_id' >
+            <option selected>
+                Выберите лот
+            </option>
             <option
                 :key='lot.offer_id'
                 :value='lot.offer_id'
                 v-bind="lots"
                 v-for="lot in lots"
-            >Название: {{lot.name}}, Описание: {{lot.description}}
+            >Название: {{lot.name}}, Описание: {{lot.description}}, Текущая ставка: {{lot.bet_on_lot}} рублей
             </option>
         </select>
 
-        <fast-bet @bet="onBet"></fast-bet>
+        <fast-bet @bet="onBet" v-if="auth" :user_id="user_id"></fast-bet>
+        <h3 v-else="auth">Для ставки необходимо <a :href="loginUrl">войти</a></h3>
 
 
         <br>
@@ -54,9 +58,11 @@
     }
 
     export default {
+        props:['auth', 'user_id'],
         data() {
             return {
                 lots: [],
+                loginUrl: 'http://auction/login',
             }
         },
         mounted(){

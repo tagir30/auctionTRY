@@ -1976,9 +1976,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['user_id'],
   data: function data() {
     return {
-      bet: 0,
+      bet: null,
       errors: [],
       flash_success: []
     };
@@ -2003,7 +2004,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   method: 'put',
                   url: "/api/offers/".concat(offer),
                   data: {
-                    bet_on_lot: _this.bet
+                    bet_on_lot: _this.bet,
+                    user_id: _this.user_id
                   }
                 });
 
@@ -2050,6 +2052,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2075,18 +2097,70 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['lot'],
+  props: ['lot', 'user_id', 'auth'],
   data: function data() {
     return {
+      errors: [],
+      flash_success: [],
       pathImag: 'http://auction/storage/' + this.lot.pathImage,
-      bet_value: ''
+      bet: null,
+      loginUrl: 'http://auction/login'
     };
   },
-  mounted: function mounted() {// this.read();
-  },
+  mounted: function mounted() {},
   methods: {
-    bet: function bet() {
-      alert(this.bet_value);
+    update: function update() {
+      var _this = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var response;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.prev = 0;
+                _this.errors = [];
+                _this.flash_success = [];
+                _context.next = 5;
+                return window.axios({
+                  method: 'put',
+                  url: "/api/offers/".concat(_this.lot.offer.id),
+                  data: {
+                    bet_on_lot: _this.bet,
+                    user_id: _this.user_id
+                  }
+                });
+
+              case 5:
+                response = _context.sent;
+                _this.lot.offer.bet_on_lot = _this.bet;
+                _this.bet = null;
+                _this.flash_success = 'Ставка принята.';
+                _context.next = 15;
+                break;
+
+              case 11:
+                _context.prev = 11;
+                _context.t0 = _context["catch"](0);
+
+                if (_context.t0.response.status === 422) {
+                  _context.t0.response.data.errors.bet_on_lot.forEach(function (error) {
+                    _this.errors.push(error);
+                  }); //Как обрабатывать не отдельно :(
+
+                }
+
+                if (_context.t0.response.status === 403) {
+                  _this.errors.push(_context.t0.response.data.message);
+                }
+
+              case 15:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[0, 11]]);
+      }))();
     }
   }
 });
@@ -2187,6 +2261,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
 function Lot(_ref) {
   var name = _ref.name,
       description = _ref.description,
@@ -2206,9 +2284,11 @@ function Lot(_ref) {
 }
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['auth', 'user_id'],
   data: function data() {
     return {
-      lots: []
+      lots: [],
+      loginUrl: 'http://auction/login'
     };
   },
   mounted: function mounted() {
@@ -38711,6 +38791,29 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
+    _vm.errors.length
+      ? _c("div", [
+          _c("b", [_vm._v("Пожалуйста исправте указанные ошибки")]),
+          _vm._v(" "),
+          _c(
+            "ul",
+            { staticClass: "alert-danger" },
+            _vm._l(_vm.errors, function(error) {
+              return _c("li", [
+                _vm._v("\n                " + _vm._s(error) + "\n            ")
+              ])
+            }),
+            0
+          )
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.flash_success.length
+      ? _c("div", { staticClass: "alert alert-success" }, [
+          _c("strong", [_vm._v(_vm._s(_vm.flash_success))])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _c("div", { staticClass: "row no-gutters" }, [
       _c("div", { staticClass: "col-12 col-sm-6 col-md-5" }, [
         _c("img", {
@@ -38749,31 +38852,40 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.bet_value,
-                  expression: "bet_value"
+                  value: _vm.bet,
+                  expression: "bet"
                 }
               ],
               staticClass: "form-control",
               attrs: { type: "text", name: "" },
-              domProps: { value: _vm.bet_value },
+              domProps: { value: _vm.bet },
               on: {
                 input: function($event) {
                   if ($event.target.composing) {
                     return
                   }
-                  _vm.bet_value = $event.target.value
+                  _vm.bet = $event.target.value
                 }
               }
             })
           ]),
           _vm._v(" "),
-          _c("li", { staticClass: "list-group-item", on: { click: _vm.bet } }, [
-            _c(
-              "button",
-              { staticClass: "btn-primary", attrs: { type: "submit" } },
-              [_vm._v("Сделать ставку")]
-            )
-          ])
+          _vm.auth
+            ? _c(
+                "li",
+                { staticClass: "list-group-item", on: { click: _vm.update } },
+                [
+                  _c(
+                    "button",
+                    { staticClass: "btn-primary", attrs: { type: "submit" } },
+                    [_vm._v("Сделать ставку")]
+                  )
+                ]
+              )
+            : _c("li", { staticClass: "list-group-item" }, [
+                _vm._v("Для ставки необходимо "),
+                _c("a", { attrs: { href: _vm.loginUrl } }, [_vm._v("войти")])
+              ])
         ])
       ])
     ])
@@ -38855,30 +38967,46 @@ var render = function() {
       _c(
         "select",
         { staticClass: "form-control", attrs: { id: "bet_id" } },
-        _vm._l(_vm.lots, function(lot) {
-          return _c(
-            "option",
-            _vm._b(
-              { key: lot.offer_id, domProps: { value: lot.offer_id } },
+        [
+          _c("option", { attrs: { selected: "" } }, [
+            _vm._v("\n            Выберите лот\n        ")
+          ]),
+          _vm._v(" "),
+          _vm._l(_vm.lots, function(lot) {
+            return _c(
               "option",
-              _vm.lots,
-              false
-            ),
-            [
-              _vm._v(
-                "Название: " +
-                  _vm._s(lot.name) +
-                  ", Описание: " +
-                  _vm._s(lot.description) +
-                  "\n        "
-              )
-            ]
-          )
-        }),
-        0
+              _vm._b(
+                { key: lot.offer_id, domProps: { value: lot.offer_id } },
+                "option",
+                _vm.lots,
+                false
+              ),
+              [
+                _vm._v(
+                  "Название: " +
+                    _vm._s(lot.name) +
+                    ", Описание: " +
+                    _vm._s(lot.description) +
+                    ", Текущая ставка: " +
+                    _vm._s(lot.bet_on_lot) +
+                    " рублей\n        "
+                )
+              ]
+            )
+          })
+        ],
+        2
       ),
       _vm._v(" "),
-      _c("fast-bet", { on: { bet: _vm.onBet } }),
+      _vm.auth
+        ? _c("fast-bet", {
+            attrs: { user_id: _vm.user_id },
+            on: { bet: _vm.onBet }
+          })
+        : _c("h3", [
+            _vm._v("Для ставки необходимо "),
+            _c("a", { attrs: { href: _vm.loginUrl } }, [_vm._v("войти")])
+          ]),
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
