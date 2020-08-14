@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LotRequest extends FormRequest
+class StoreLotRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,7 +27,7 @@ class LotRequest extends FormRequest
             'lot.nameLot' => 'required|string|min:3',
             'lot.description' => 'required|string|min:3',
             'lot.startingPrice' => 'required|integer',
-            'lot.timeLeft' => 'required|integer',
+            'lot.timeLeft' => 'required|after:now',
         ];
     }
 
@@ -41,7 +41,7 @@ class LotRequest extends FormRequest
             'lot.nameLot.min' => 'Поле названия лота должно одержать не менее 3 символов',
             'lot.description.min' => 'Поле описания лота должно одержать не менее 3 символов',
             'lot.startingPrice.integer' => 'Начальная цена должна быть числом',
-            'lot.timeLeft.integer' => 'Время должно быть числом',
+            'lot.timeLeft.after' => 'Дата должна быть не меньше сегодняшней даты',
         ];
     }
 }

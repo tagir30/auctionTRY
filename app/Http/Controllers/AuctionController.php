@@ -16,14 +16,7 @@ class AuctionController extends Controller
      */
     public function index()
     {
-        $lots = [];
-
-        if (auth()->check()) {
-            $lots = Lot::where('user_id', '!=', auth()->id())->where('status', 1)->with('offer')->paginate();//Чтобы не отображать свои лоты
-        } else {
-            $lots = Lot::where('status', 1)->with('offer')->paginate();
-        }
-        return view('auction.main', compact('lots'));
+        return view('auction.main');
     }
 
     /**
@@ -40,13 +33,13 @@ class AuctionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param Offer $offer
      * @return Response
      */
-    public function show($offer)
+    public function show(Offer $offer)
     {
-        $offer = Offer::findOrFail($offer);
-        dd($offer->lot);
+        $lot = Lot::with('offer')->findOrFail($offer->lot_id);
+        return view('auction.show', compact('lot'));
     }
 
     /**

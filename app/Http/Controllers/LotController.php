@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LotRequest;
+use App\Http\Requests\StoreLotRequest;
+use App\Http\Requests\UpdateLotRequest;
 use App\Lot;
 use App\Service\LotService;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class LotController extends Controller
 {
@@ -17,7 +18,6 @@ class LotController extends Controller
     public function __construct(LotService $lotService)
     {
         $this->lotService = $lotService;
-
     }
 
     /**
@@ -27,7 +27,13 @@ class LotController extends Controller
      */
     public function index()
     {
-        $lots = Lot::where('user_id', Auth::id())->paginate(5);
+        if (request()->sort == 'active') {
+            $lots = Lot::where('user_id', Auth::id())->where('status', 1)->paginate(10);
+        } elseif (request()->sort == 'end') {
+            $lots = Lot::where('user_id', Auth::id())->where('status', -1)->paginate(10);
+        } else {
+            $lots = Lot::where('user_id', Auth::id())->paginate(10);
+        }
         return view('lots.home', compact('lots'));
     }
 
@@ -44,22 +50,12 @@ class LotController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreLotRequest $request
      * @return Response
      */
-    public function store(LotRequest $request)
+    public function store(StoreLotRequest $request)
     {
-
-        $path = $this->lotService->handleUploadedImage($request->file('lot.image'));
-
-        Lot::create([
-            'name' => $request->lot['nameLot'],
-            'description' => $request->lot['description'],
-            'startingPrice' => $request->lot['startingPrice'],
-            'timeLeft' => $request->lot['timeLeft'],
-            'pathImage' => $path,
-            'user_id' => Auth::id(),
-        ]);
+        $this->lotService->store($request);//Стоит передавать реквест, или request() можно использовать...
 
         return redirect()->route('lots.index')->with('success_message', 'Лот успешно создан!');
     }
@@ -85,23 +81,22 @@ class LotController extends Controller
      */
     public function edit(Lot $lot)
     {
-
         return view('lots.edit', compact('lot'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param UpdateLotRequest $request
      * @param Lot $lot
      * @return Response
      * @throws AuthorizationException
      */
-    public function update(Request $request, Lot $lot)
-    {
+    public function update(UpdateLotRequest $request, Lot $lot)
+    {//мб стоит отделить выставление на аукцион и update
         $this->authorize('update', $lot);
-        $this->lotService->addOrRemoveToAuction($lot);
-        return back();
+        $errors = $this->lotService->mainSwitch($lot);//как от этого избавиться...
+        return redirect()->route('lots.index')->withErrors($errors);
     }
 
     /**
@@ -114,12 +109,9 @@ class LotController extends Controller
     public function destroy(Lot $lot)//Дописать условия при нахождения лота на аукционне и т.д
     {
         $this->authorize('delete', $lot);
-//        $lot = Lot::findOrFail($id);
-//
-//        if (Auth::id() === $lot->user_id) {
-//            $lot->delete();
-//
-//            return redirect()->route('lots.index')->with('success_message', 'Лот успешно удалён');
-//        }
+        Storage::delete('public/' . $lot->pathImage);
+        $lot->delete();
+
+        return redirect()->route('lots.index')->with('success_message', 'Лот успешно удалён');
     }
 }
