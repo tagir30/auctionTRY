@@ -21,7 +21,8 @@
                         </ul>
                     </div>
                 @endif
-                <form action="{{route('lots.update', ['lot' => $lot->id])}}" method="post" enctype="multipart/form-data">
+                <form action="{{route('lots.update', ['lot' => $lot->id])}}" method="post"
+                      enctype="multipart/form-data">
                     @method('patch')
                     @csrf
                     <input type="hidden" name="action" value="update">
@@ -59,13 +60,21 @@
                     </div>
                     <div class="mb-3">
                         <div class="input-group">
-                            <input type="submit" value="Отправить">
+                            <button type="submit">Изменить</button>
                         </div>
                     </div>
-
-
                 </form>
-
+                    @if(!$lot->status)
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                            <form action="{{route('lots.destroy', ['lot' => $lot->id])}}" method="post">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit">Удалить лот</button>
+                            </form>
+                        </div>
+                    </div>
+                    @endif
             </div>
 
             <div class="d-flex justify-content-between align-items-center">
@@ -77,9 +86,5 @@
                 </div>
             </div>
 
-            {{--        <timer-component></timer-component>--}}
         </div>
-
-
-
 @endsection

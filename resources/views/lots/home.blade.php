@@ -19,6 +19,11 @@
             </div>
         @endif
 
+        <a class="text-info" href="{{route('lots.index', ['sort' => 'active'])}}">||Активные лоты ||</a>
+        <a class="text-danger" href="{{route('lots.index', ['sort' => 'end'])}}">Завершённые лоты ||</a>
+        <a class="text-body" href="{{route('lots.index')}}">Все лоты ||</a>
+
+
         <div class="text-center">
             <a href="{{route('lots.create')}}">
                 <button class="btn btn-dark btn-lg">Созадть новый лот</button>
@@ -47,21 +52,25 @@
                                         <form action="{{route('lots.update', ['lot' => $lot->id])}}" method="post">
                                             @csrf
                                             @method('PATCH')
-                                        @if(!$lot->status)
+                                            @if(!$lot->status)
 
-                                                <input type="hidden" name="action" value = "addToAuction">
-                                                    <button type="submit" onclick="return confirm('Вы уверены?')" class="btn btn-danger">
-                                                        Выставить на аукцион
-                                                    </button>
+                                                <input type="hidden" name="action" value="addToAuction">
+                                                <button type="submit" onclick="return confirm('Вы уверены?')"
+                                                        class="btn btn-danger">
+                                                    Выставить на аукцион
+                                                </button>
                                                 <a href="{{route('lots.show', ['lot' => $lot->id])}}">
-                                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary">
+                                                        Edit
+                                                    </button>
                                                 </a>
-                                        @else
+                                            @else
                                                 <input type="hidden" name="action" value="removeFromAuction">
-                                                <button type="submit" onclick="return confirm('Вы уверены?')" class="btn btn-danger">
+                                                <button type="submit" onclick="return confirm('Вы уверены?')"
+                                                        class="btn btn-danger">
                                                     Снять с аукциона
                                                 </button>
-                                        @endif
+                                            @endif
                                         </form>
 
                                     </div>
@@ -71,7 +80,7 @@
                     </div>
                 @endforeach
             </div>
-                {{$lots->links()}}
+            {{$lots->links()}}
         @endisset
     </div>
 @endsection

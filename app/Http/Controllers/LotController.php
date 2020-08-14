@@ -11,6 +11,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class LotController extends Controller
 {
@@ -31,7 +32,15 @@ class LotController extends Controller
      */
     public function index()
     {
-        $lots = Lot::where('user_id', Auth::id())->paginate(10);
+
+
+        if(request()->sort == 'active'){
+            $lots = Lot::where('user_id', Auth::id())->where('status', 1)->paginate(10);
+        }elseif (\request()->sort == 'end'){
+            $lots = Lot::where('user_id', Auth::id())->where('status', -1)->paginate(10);
+        }else{
+            $lots = Lot::where('user_id', Auth::id())->paginate(10);
+        }
         return view('lots.home', compact('lots'));
     }
 
@@ -56,14 +65,14 @@ class LotController extends Controller
         //По сути можно вынести в тот же сервис...(конечно можно избавиться от зависимостей), но не станет ли сервис god :D
         $path = $this->imageService->handleUploadedImage($request->file('lot.image'));
 
-        dd(Lot::create([
+        Lot::create([
             'name' => $request->lot['nameLot'],
             'description' => $request->lot['description'],
             'startingPrice' => $request->lot['startingPrice'],
             'timeLeft' => $request->lot['timeLeft'],
             'pathImage' => $path,
             'user_id' => Auth::id(),
-        ]));
+        ]);
 
         return redirect()->route('lots.index')->with('success_message', 'Лот успешно создан!');
     }
@@ -101,10 +110,9 @@ class LotController extends Controller
      * @return Response
      * @throws AuthorizationException
      */
-    public function update(UpdateLotRequest $request, Lot $lot)//не могу придумать нормальный реквес...
+    public function update(UpdateLotRequest $request, Lot $lot)
     {//мб стоит отделить выставление на аукцион и update
         $this->authorize('update', $lot);
-
         $this->lotService->mainSwitch($lot);//как от этого избавиться...
         return redirect()->route('lots.index');
     }
@@ -119,12 +127,9 @@ class LotController extends Controller
     public function destroy(Lot $lot)//Дописать условия при нахождения лота на аукционне и т.д
     {
         $this->authorize('delete', $lot);
-//        $lot = Lot::findOrFail($id);
-//
-//        if (Auth::id() === $lot->user_id) {
-//            $lot->delete();
-//
-//            return redirect()->route('lots.index')->with('success_message', 'Лот успешно удалён');
-//        }
+        Storage::delete('public/' . $lot->pathImage);
+        $lot->delete();
+
+        return redirect()->route('lots.index')->with('success_message', 'Лот успешно удалён');
     }
 }
