@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreLotRequest;
 use App\Http\Requests\UpdateLotRequest;
 use App\Lot;
-use App\Service\ImageService;
 use App\Service\LotService;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -17,7 +15,7 @@ class LotController extends Controller
 {
     private $lotService;
 
-    public function __construct(LotService $lotService )
+    public function __construct(LotService $lotService)
     {
         $this->lotService = $lotService;
     }
@@ -29,13 +27,11 @@ class LotController extends Controller
      */
     public function index()
     {
-
-
-        if(request()->sort == 'active'){
+        if (request()->sort == 'active') {
             $lots = Lot::where('user_id', Auth::id())->where('status', 1)->paginate(10);
-        }elseif (\request()->sort == 'end'){
+        } elseif (request()->sort == 'end') {
             $lots = Lot::where('user_id', Auth::id())->where('status', -1)->paginate(10);
-        }else{
+        } else {
             $lots = Lot::where('user_id', Auth::id())->paginate(10);
         }
         return view('lots.home', compact('lots'));
@@ -85,7 +81,6 @@ class LotController extends Controller
      */
     public function edit(Lot $lot)
     {
-
         return view('lots.edit', compact('lot'));
     }
 
@@ -100,8 +95,8 @@ class LotController extends Controller
     public function update(UpdateLotRequest $request, Lot $lot)
     {//мб стоит отделить выставление на аукцион и update
         $this->authorize('update', $lot);
-        $this->lotService->mainSwitch($lot);//как от этого избавиться...
-        return redirect()->route('lots.index');
+        $errors = $this->lotService->mainSwitch($lot);//как от этого избавиться...
+        return redirect()->route('lots.index')->withErrors($errors);
     }
 
     /**

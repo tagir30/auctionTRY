@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\UserIdSameOwner;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateBetRequest;
 use App\Lot;
 use App\Offer;
 use Illuminate\Http\Response;
-use mysql_xdevapi\Exception;
 
 class OfferController extends Controller
 {
@@ -21,7 +19,7 @@ class OfferController extends Controller
     public function update(UpdateBetRequest $request, Offer $offer)
     {
         $lot_user_id = (Lot::findOrFail($offer->lot_id))->user_id;//для проверки, чтобы сам на свой лот не ставил
-        if($lot_user_id == $request->user_id){//Возможно это можно в форм реквест сделать
+        if ($lot_user_id == $request->user_id) {//Возможно это можно в форм реквест сделать
             abort(403, 'Ставка на свой лот запрещена!');
         }
         $offer->bet_on_lot = $request->bet_on_lot;

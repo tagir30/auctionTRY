@@ -8,6 +8,7 @@ use App\Jobs\ProcessLotCancel;
 use App\Lot;
 use App\Offer;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\MessageBag;
 
 class LotService
 {
@@ -27,6 +28,7 @@ class LotService
 
     /**
      * @param $lot
+     * @return MessageBag
      */
     public function mainSwitch($lot)//Как избавиться от этой конструкции :((
     {
@@ -34,10 +36,13 @@ class LotService
             $this->removeLotFromAuction($lot);
         } elseif (!$lot->status && request()->action === self::ADD_LOT) {
             $this->addLotToAuction($lot);
-        } elseif (request()->action === self::UPDATE_LOT) {
+        } elseif (request()->action === self::UPDATE_LOT && !$lot->status) {
             $this->update($lot);
+        } else{
+           $errors = new MessageBag();
+           $errors->add('lotInAuction', 'Лот находиться на аукционе, изменение запрещено!');
+           return $errors;
         }
-
     }
 
     /**
@@ -87,17 +92,19 @@ class LotService
         session()->flash('success_message', 'Лот успешно обновлён!');
 
     }
-     public function store($request){
-         $path = $this->imageService->handleUploadedImage($request->file('lot.image'));
 
-         Lot::create([
-             'name' => $request->lot['nameLot'],
-             'description' => $request->lot['description'],
-             'startingPrice' => $request->lot['startingPrice'],
-             'timeLeft' => $request->lot['timeLeft'],
-             'pathImage' => $path,
-             'user_id' => Auth::id(),
-         ]);
-     }
+    public function store($request)
+    {
+        $path = $this->imageService->handleUploadedImage($request->file('lot.image'));
+
+        Lot::create([
+            'name' => $request->lot['nameLot'],
+            'description' => $request->lot['description'],
+            'startingPrice' => $request->lot['startingPrice'],
+            'timeLeft' => $request->lot['timeLeft'],
+            'pathImage' => $path,
+            'user_id' => Auth::id(),
+        ]);
+    }
 
 }
