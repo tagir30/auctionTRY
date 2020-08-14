@@ -65,12 +65,12 @@
                     </div>
                 </form>
                     @if(!$lot->status)
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="btn-group">
+                    <div class="mb-3">
+                        <div class="input-group">
                             <form action="{{route('lots.destroy', ['lot' => $lot->id])}}" method="post">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit">Удалить лот</button>
+                                <button type="submit" class="btn-danger" onclick="return confirm('Вы уверены?')">Удалить лот</button>
                             </form>
                         </div>
                     </div>

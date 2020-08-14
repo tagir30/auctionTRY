@@ -16,13 +16,10 @@ use Illuminate\Support\Facades\Storage;
 class LotController extends Controller
 {
     private $lotService;
-    private $imageService;
 
-    public function __construct(LotService $lotService, ImageService $imageService)
+    public function __construct(LotService $lotService )
     {
-        $this->imageService = $imageService;
         $this->lotService = $lotService;
-
     }
 
     /**
@@ -62,17 +59,7 @@ class LotController extends Controller
      */
     public function store(StoreLotRequest $request)
     {
-        //По сути можно вынести в тот же сервис...(конечно можно избавиться от зависимостей), но не станет ли сервис god :D
-        $path = $this->imageService->handleUploadedImage($request->file('lot.image'));
-
-        Lot::create([
-            'name' => $request->lot['nameLot'],
-            'description' => $request->lot['description'],
-            'startingPrice' => $request->lot['startingPrice'],
-            'timeLeft' => $request->lot['timeLeft'],
-            'pathImage' => $path,
-            'user_id' => Auth::id(),
-        ]);
+        $this->lotService->store($request);//Стоит передавать реквест, или request() можно использовать...
 
         return redirect()->route('lots.index')->with('success_message', 'Лот успешно создан!');
     }

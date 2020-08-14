@@ -5,8 +5,8 @@ namespace App\Service;
 
 
 use App\Jobs\ProcessLotCancel;
+use App\Lot;
 use App\Offer;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class LotService
@@ -16,9 +16,11 @@ class LotService
     const UPDATE_LOT = 'update';
 
     private $imageService;
+    private $dateService;
 
-    public function __construct(ImageService $imageService)
+    public function __construct(ImageService $imageService, DateService $dateService)
     {
+        $this->dateService = $dateService;
         $this->imageService = $imageService;
     }
 
@@ -54,19 +56,20 @@ class LotService
      */
     private function addLotToAuction($lot)
     {
-        $date = Carbon::create($lot->timeLeft);
-        $deferenceHours = $date->diffInHours(now());
-        $lot->status = 1;
+        $deferenceHours = $this->dateService->getDeferenceHours($lot->timeLeft);
 
-        ProcessLotCancel::dispatch($lot)->delay($deferenceHours);//Только это придумал :D
+        $lot->status = 1;
         $offer = new Offer([
             'lot_id' => $lot->id,
             'bet_on_lot' => $lot->startingPrice,
         ]);
 
+        ProcessLotCancel::dispatch($lot, $offer)->delay($deferenceHours);//Только это придумал :D Можно ли так...
+
         $lot->offer()->save($offer);
-        session()->flash('success_message', 'Лот успешно выставлен!');
         $lot->update();
+        session()->flash('success_message', 'Лот успешно выставлен!');
+
     }
 
     private function update($lot)
@@ -84,5 +87,17 @@ class LotService
         session()->flash('success_message', 'Лот успешно обновлён!');
 
     }
+     public function store($request){
+         $path = $this->imageService->handleUploadedImage($request->file('lot.image'));
+
+         Lot::create([
+             'name' => $request->lot['nameLot'],
+             'description' => $request->lot['description'],
+             'startingPrice' => $request->lot['startingPrice'],
+             'timeLeft' => $request->lot['timeLeft'],
+             'pathImage' => $path,
+             'user_id' => Auth::id(),
+         ]);
+     }
 
 }

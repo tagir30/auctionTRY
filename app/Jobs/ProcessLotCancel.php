@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Lot;
+use App\Offer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -13,15 +14,25 @@ class ProcessLotCancel implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * @var Lot
+     */
     private $lot;
+
+    /**
+     * @var Offer
+     */
+    private $offer;
 
     /**
      * Create a new job instance.
      *
      * @param Lot $lot
+     * @param Offer $offer
      */
-    public function __construct(Lot $lot)
+    public function __construct(Lot $lot, Offer $offer)
     {
+        $this->offer = $offer;
         $this->lot = $lot;
     }
 
@@ -29,17 +40,14 @@ class ProcessLotCancel implements ShouldQueue
      * Execute the job.
      *
      * @return void
+     *
+     *
      */
-    public function handle()
+    public function handle()//Возможно стоит сделать составной job
     {
-        $this->setTimerForCancel($this->lot);
+        //тут что-то типо определения победителя
+        $this->offer->delete();
+        $this->lot->update(['status' => -1]);
     }
 
-    private function setTimerForCancel($lot)
-    {
-        if ($lot->status) {
-            $lot->status = 0;
-            $lot->update();
-        }
-    }
 }
