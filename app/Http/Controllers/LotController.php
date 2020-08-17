@@ -7,14 +7,26 @@ use App\Http\Requests\UpdateLotRequest;
 use App\Lot;
 use App\Service\LotService;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\MessageBag;
 
 class LotController extends Controller
 {
-    private $lotService;
+    const ADD_LOT = 'addToAuction';
+    const REMOVE_LOT = 'removeFromAuction';
+    const UPDATE_LOT = 'update';
 
+    private $lotService;
+    private $paginate = 10;
+
+    /**
+     * LotController constructor.
+     * @param LotService $lotService
+     */
     public function __construct(LotService $lotService)
     {
         $this->lotService = $lotService;
@@ -28,11 +40,11 @@ class LotController extends Controller
     public function index()
     {
         if (request()->sort == 'active') {
-            $lots = Lot::where('user_id', Auth::id())->where('status', 1)->paginate(10);
+            $lots = Lot::getActiveLot()->paginate($this->paginate);
         } elseif (request()->sort == 'end') {
-            $lots = Lot::where('user_id', Auth::id())->where('status', -1)->paginate(10);
+            $lots = Lot::getCompletedLot()->paginate($this->paginate);
         } else {
-            $lots = Lot::where('user_id', Auth::id())->paginate(10);
+            $lots = Lot::where('user_id', Auth::id())->paginate($this->paginate);
         }
         return view('lots.home', compact('lots'));
     }
@@ -89,14 +101,41 @@ class LotController extends Controller
      *
      * @param UpdateLotRequest $request
      * @param Lot $lot
+     * @param MessageBag $errors
      * @return Response
      * @throws AuthorizationException
      */
-    public function update(UpdateLotRequest $request, Lot $lot)
-    {//мб стоит отделить выставление на аукцион и update
+    public function update(UpdateLotRequest $request, Lot $lot, MessageBag $errors)
+    {
         $this->authorize('update', $lot);
-        $errors = $this->lotService->mainSwitch($lot);//как от этого избавиться...
+
+        if ($lot->status) {
+            $errors->add('lotInAuction', 'Лот находиться на аукционе, изменения запрещены!');
+        } else {
+            $this->lotService->update($lot);
+        }
+
         return redirect()->route('lots.index')->withErrors($errors);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function updateStatus(Request $request)
+    {
+        $lot = Lot::findOrFail($request->lot);
+
+        if ($request->action === self::ADD_LOT) {//или объеденить их elseif?
+            $this->lotService->addLotToAuction($lot);
+        }
+
+        if ($request->action === self::REMOVE_LOT) {
+            $this->lotService->removeLotFromAuction($lot);
+        }
+        return redirect()->route('lots.index');
+
     }
 
     /**

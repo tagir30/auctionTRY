@@ -25,7 +25,7 @@
                       enctype="multipart/form-data">
                     @method('patch')
                     @csrf
-                    <input type="hidden" name="action" value="update">
+{{--                    <input type="hidden" name="action" value="update">--}}
                     <div class="mb-3">
                         <label>Название лота</label>
                         <div class="input-group">

@@ -49,9 +49,10 @@
                                 <p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
-                                        <form action="{{route('lots.update', ['lot' => $lot->id])}}" method="post">
+                                        <form action="{{route('lots.updateStatus')}}" method="post">
                                             @csrf
                                             @method('PATCH')
+                                            <input type="hidden" name="lot" value="{{$lot->id}}">
                                             @if(!$lot->status)
 
                                                 <input type="hidden" name="action" value="addToAuction">
