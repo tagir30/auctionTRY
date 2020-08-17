@@ -3,12 +3,16 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 
 class Lot extends Model
 {
     protected $fillable = ['name', 'description', 'startingPrice', 'timeLeft', 'pathImage', 'user_id'];
 
+    /**
+     * @return HasOne
+     */
     public function offer()
     {
         return $this->hasOne(Offer::class);

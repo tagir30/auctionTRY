@@ -19,4 +19,17 @@ class ImageService
         }
         return $path;
     }
+
+    //Возможно есть другой способ...
+    public function handleUploadedUpdateImage($image)
+    {
+        $path = null;
+
+        if (!is_null($image)) {
+            $path = $image->store('uploads', 'public');
+        }
+
+        return $path;
+    }
+
 }

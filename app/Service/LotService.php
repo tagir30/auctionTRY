@@ -12,13 +12,14 @@ use Illuminate\Support\MessageBag;
 
 class LotService
 {
-    const ADD_LOT = 'addToAuction';
-    const REMOVE_LOT = 'removeFromAuction';
-    const UPDATE_LOT = 'update';
-
     private $imageService;
     private $dateService;
 
+    /**
+     * LotService constructor.
+     * @param ImageService $imageService
+     * @param DateService $dateService
+     */
     public function __construct(ImageService $imageService, DateService $dateService)
     {
         $this->dateService = $dateService;
@@ -30,26 +31,27 @@ class LotService
      * @param $lot
      * @return MessageBag
      */
-    public function mainSwitch($lot)//Как избавиться от этой конструкции :((
-    {
-        if ($lot->status && request()->action == self::REMOVE_LOT) {//Мб вынести условия в отделюную функцию...
-            $this->removeLotFromAuction($lot);
-        } elseif (!$lot->status && request()->action === self::ADD_LOT) {
-            $this->addLotToAuction($lot);
-        } elseif (request()->action === self::UPDATE_LOT && !$lot->status) {
-            $this->update($lot);
-        } else{
-           $errors = new MessageBag();
-           $errors->add('lotInAuction', 'Лот находиться на аукционе, изменение запрещено!');
-           return $errors;
-        }
-    }
+//    public function mainSwitch($lot)//Как избавиться от этой конструкции :((
+//    {
+//        if ($lot->status && request()->action == self::REMOVE_LOT) {//Мб вынести условия в отделюную функцию...
+//            $this->removeLotFromAuction($lot);
+//        } elseif (!$lot->status && request()->action === self::ADD_LOT) {
+//            $this->addLotToAuction($lot);
+//        } elseif (request()->action === self::UPDATE_LOT && !$lot->status) {
+//            $this->update($lot);
+//        } else{
+//           $errors = new MessageBag();
+//           $errors->add('lotInAuction', 'Лот находиться на аукционе, изменение запрещено!');
+//           return $errors;
+//        }
+//    }
 
     /**
      * @param $lot
      */
-    private function removeLotFromAuction($lot)//Нужно дописать вычисление ставки итоговой
+    public function removeLotFromAuction($lot)
     {
+        //Нужно дописать вычисление ставки итоговой
         $lot->status = 0;//Возможно есть способ удалить из очереди... Есть вариант сохранять в бд uuid
         Offer::where('lot_id', $lot->id)->firstOrFail()->delete();
         session()->flash('success_message', 'Лот успешно снят с аукционна!');
@@ -59,7 +61,7 @@ class LotService
     /**
      * @param $lot
      */
-    private function addLotToAuction($lot)
+    public function addLotToAuction($lot) : void
     {
         $deferenceHours = $this->dateService->getDeferenceHours($lot->timeLeft);
 
@@ -77,23 +79,23 @@ class LotService
 
     }
 
-    private function update($lot)
+    public function update($lot) : void
     {
 
-        $path = $this->imageService->handleUploadedImage(request()->file('lot.image'));
+        $path = $this->imageService->handleUploadedUpdateImage(request()->file('lot.image'));
         $lot->update([
             'name' => request()->lot['nameLot'],
             'description' => request()->lot['description'],
             'startingPrice' => request()->lot['startingPrice'],
             'timeLeft' => request()->lot['timeLeft'],
-            'pathImage' => $path,
+            'pathImage' => $path ?? $lot->pathImage,
             'user_id' => Auth::id(),
         ]);
         session()->flash('success_message', 'Лот успешно обновлён!');
 
     }
 
-    public function store($request)
+    public function store($request) : void
     {
         $path = $this->imageService->handleUploadedImage($request->file('lot.image'));
 
