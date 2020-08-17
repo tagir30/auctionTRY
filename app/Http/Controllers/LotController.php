@@ -14,7 +14,12 @@ use Illuminate\Support\Facades\Storage;
 class LotController extends Controller
 {
     private $lotService;
+    private $paginate = 10;
 
+    /**
+     * LotController constructor.
+     * @param LotService $lotService
+     */
     public function __construct(LotService $lotService)
     {
         $this->lotService = $lotService;
@@ -28,11 +33,11 @@ class LotController extends Controller
     public function index()
     {
         if (request()->sort == 'active') {
-            $lots = Lot::where('user_id', Auth::id())->where('status', 1)->paginate(10);
+            $lots = Lot::getActiveLot()->paginate($this->paginate);
         } elseif (request()->sort == 'end') {
-            $lots = Lot::where('user_id', Auth::id())->where('status', -1)->paginate(10);
+            $lots = Lot::getCompletedLot()->paginate($this->paginate);
         } else {
-            $lots = Lot::where('user_id', Auth::id())->paginate(10);
+            $lots = Lot::where('user_id', Auth::id())->paginate($this->paginate);
         }
         return view('lots.home', compact('lots'));
     }
