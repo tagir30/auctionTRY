@@ -4,6 +4,7 @@
 namespace App\Service;
 
 
+use App\Events\OfferStatusChanged;
 use App\Jobs\ProcessLotCancel;
 use App\Lot;
 use App\Offer;
@@ -53,9 +54,12 @@ class LotService
     {
         //Нужно дописать вычисление ставки итоговой
         $lot->status = 0;//Возможно есть способ удалить из очереди... Есть вариант сохранять в бд uuid
-        Offer::where('lot_id', $lot->id)->firstOrFail()->delete();
         session()->flash('success_message', 'Лот успешно снят с аукционна!');
         $lot->update();
+        event(new OfferStatusChanged($lot));
+
+//        Offer::where('lot_id', $lot->id)->firstOrFail()->delete();//Эвент не успевает проработать...
+
     }
 
     /**
@@ -75,6 +79,7 @@ class LotService
 
         $lot->offer()->save($offer);
         $lot->update();
+        event(new OfferStatusChanged($lot));
         session()->flash('success_message', 'Лот успешно выставлен!');
 
     }

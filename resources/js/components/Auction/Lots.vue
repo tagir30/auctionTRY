@@ -42,7 +42,7 @@
     </div>
 </template>
 <script>
-    function Lot({name, description, timeLeft, pathImage, offer: {
+    function Offer({name, description, timeLeft, pathImage, offer: {
             bet_on_lot,
             id: offer_id,
             created_at,
@@ -66,13 +66,18 @@
             }
         },
         mounted(){
+            Echo.channel('lot-change')
+                .listen('OfferStatusChanged', (lot) => {
+                    this.refreshOffer(lot);
+                });
             this.read();
 
         },
         methods: {
             async read() {
+                this.lots = [];
                 const {data} = await window.axios.get('/api/offers');
-                data.forEach(lot => this.lots.push(new Lot(lot)));
+                data.forEach(offer => this.lots.push(new Offer(offer)));
             },
             onBet(data) {
                 this.lots.map(lot => {
@@ -80,8 +85,25 @@
                         lot.bet_on_lot = data.bet_on_lot;
                     }
                 });
+            },
+            refreshOffer(offer){
+                console.log(this.lots);
+                const index = this.lots.map(lot => {
+                    console.log(lot.offer_id);
+                    return lot.offer_id;
+                }).indexOf(offer.offer_id);
+                console.log(index);
 
+                if(index !== -1){
+                    console.log('this delete');
+                    this.lots.splice(index, 1);
+                }
+                if(index === -1){
+                    console.log('this push');
+                    this.lots.push(new Offer(offer))
+                }
             }
+
         }
     }
 </script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OfferStatusChanged;
 use App\Http\Requests\StoreLotRequest;
 use App\Http\Requests\UpdateLotRequest;
 use App\Lot;
@@ -134,6 +135,8 @@ class LotController extends Controller
         if ($request->action === self::REMOVE_LOT) {
             $this->lotService->removeLotFromAuction($lot);
         }
+
+
         return redirect()->route('lots.index');
 
     }

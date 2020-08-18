@@ -16,13 +16,14 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
-Route::get('/', function (){
+Route::get('/', function () {
     return view('auth.login');//Какую-нибудь приветсвенную страницу
 });
+
 Route::group([
     'middleware' => 'auth',
     'prefix' => 'lots',
-], function(){
+], function () {
     Route::get('/', 'LotController@index')->name('lots.index');
     Route::post('/', 'LotController@store')->name('lots.store');
     Route::get('/create', 'LotController@create')->name('lots.create');
@@ -36,7 +37,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'offers',
-], function(){
+], function () {
     Route::get('/', 'AuctionController@index')->name('offers.index');
     Route::get('/{offer}', 'AuctionController@show')->name('offers.show');
 
