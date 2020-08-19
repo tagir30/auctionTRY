@@ -3,14 +3,13 @@
 namespace App\Events;
 
 use App\Lot;
-use App\Offer;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class OfferStatusChanged implements ShouldBroadcast
+class OfferStatusChanged implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -36,7 +35,7 @@ class OfferStatusChanged implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return (['lot-change', 'lot-change' . $this->lot->offer->id]);
+        return new Channel('lot-change');
     }
 
     public function broadcastWith(){

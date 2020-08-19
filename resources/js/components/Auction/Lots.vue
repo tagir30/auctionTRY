@@ -1,7 +1,7 @@
 <template>
     <div class="row">
 
-        <select class="form-control" id='bet_id' >
+        <select class="form-control" id='bet_id'>
             <option selected>
                 Выберите лот
             </option>
@@ -14,7 +14,7 @@
             </option>
         </select>
 
-        <fast-bet @bet="onBet" v-if="auth" :user_id="user_id"></fast-bet>
+        <fast-bet :user_id="user_id" @bet="onBet" v-if="auth"></fast-bet>
         <h3 v-else="auth">Для ставки необходимо <a :href="loginUrl">войти</a></h3>
 
 
@@ -47,7 +47,7 @@
             id: offer_id,
             created_at,
         },
-                 }) {
+                   }) {
         this.offer_id = offer_id;
         this.name = name;
         this.description = description;
@@ -58,14 +58,14 @@
     }
 
     export default {
-        props:['auth', 'user_id'],
+        props: ['auth', 'user_id'],
         data() {
             return {
                 lots: [],
                 loginUrl: 'http://auction/login',
             }
         },
-        mounted(){
+        mounted() {
             Echo.channel('lot-change')
                 .listen('OfferStatusChanged', (lot) => {
                     this.refreshOffer(lot);
@@ -86,20 +86,14 @@
                     }
                 });
             },
-            refreshOffer(offer){
-                console.log(this.lots);
+            refreshOffer(offer) {
                 const index = this.lots.map(lot => {
-                    console.log(lot.offer_id);
                     return lot.offer_id;
-                }).indexOf(offer.offer_id);
-                console.log(index);
+                }).indexOf(offer.offer_id);//Получаем индех для удаления
 
-                if(index !== -1){
-                    console.log('this delete');
+                if (index !== -1) {//Если нашёл удаляем
                     this.lots.splice(index, 1);
-                }
-                if(index === -1){
-                    console.log('this push');
+                } else if (index === -1) {
                     this.lots.push(new Offer(offer))
                 }
             }

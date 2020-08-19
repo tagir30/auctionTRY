@@ -9,10 +9,13 @@ use App\Jobs\ProcessLotCancel;
 use App\Lot;
 use App\Offer;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\MessageBag;
 
 class LotService
 {
+    const LOT_IN_AUCTION = 1;
+    const LOT_NOT_IN_AUCTION = 0;
+    const LOT_SOLD = -1;
+
     private $imageService;
     private $dateService;
 
@@ -27,68 +30,45 @@ class LotService
         $this->imageService = $imageService;
     }
 
-
-    /**
-     * @param $lot
-     * @return MessageBag
-     */
-//    public function mainSwitch($lot)//Как избавиться от этой конструкции :((
-//    {
-//        if ($lot->status && request()->action == self::REMOVE_LOT) {//Мб вынести условия в отделюную функцию...
-//            $this->removeLotFromAuction($lot);
-//        } elseif (!$lot->status && request()->action === self::ADD_LOT) {
-//            $this->addLotToAuction($lot);
-//        } elseif (request()->action === self::UPDATE_LOT && !$lot->status) {
-//            $this->update($lot);
-//        } else{
-//           $errors = new MessageBag();
-//           $errors->add('lotInAuction', 'Лот находиться на аукционе, изменение запрещено!');
-//           return $errors;
-//        }
-//    }
-
     /**
      * @param $lot
      */
     public function removeLotFromAuction($lot)
     {
         //Нужно дописать вычисление ставки итоговой
-        $lot->status = 0;//Возможно есть способ удалить из очереди... Есть вариант сохранять в бд uuid
-        session()->flash('success_message', 'Лот успешно снят с аукционна!');
+        $lot->status = self::LOT_NOT_IN_AUCTION; // -1 в будещем
         $lot->update();
         event(new OfferStatusChanged($lot));
-
-//        Offer::where('lot_id', $lot->id)->firstOrFail()->delete();//Эвент не успевает проработать...
-
+        // Возможно просто запустить job для удаления ...
+        ProcessLotCancel::dispatch($lot, $lot->offer)->delay(5);//Вдруг event долго идти будет
+        // Offer::where('lot_id', $lot->id)->firstOrFail()->delete();//Эвент не успевает проработать...
+        session()->flash('success_message', 'Лот успешно снят с аукционна!');
     }
 
     /**
      * @param $lot
      */
-    public function addLotToAuction($lot) : void
+    public function addLotToAuction($lot): void
     {
         $deferenceHours = $this->dateService->getDeferenceHours($lot->timeLeft);
 
-        $lot->status = 1;
+        $lot->status = self::LOT_IN_AUCTION;
         $offer = new Offer([
             'lot_id' => $lot->id,
             'bet_on_lot' => $lot->startingPrice,
         ]);
-
-        ProcessLotCancel::dispatch($lot, $offer)->delay($deferenceHours);//Только это придумал :D Можно ли так...
-
         $lot->offer()->save($offer);
-        $lot->update();
+        ProcessLotCancel::dispatch($lot, $offer)->delay(now()->addHours($deferenceHours));//Чем это заменить можно...
+
+
         event(new OfferStatusChanged($lot));
         session()->flash('success_message', 'Лот успешно выставлен!');
-
     }
 
-    public function update($lot) : void
+    public function update($lot): void
     {
-
         $path = $this->imageService->handleUploadedUpdateImage(request()->file('lot.image'));
-        $lot->update([
+        $lot->update([//Мб вынести в DTO
             'name' => request()->lot['nameLot'],
             'description' => request()->lot['description'],
             'startingPrice' => request()->lot['startingPrice'],
@@ -97,10 +77,9 @@ class LotService
             'user_id' => Auth::id(),
         ]);
         session()->flash('success_message', 'Лот успешно обновлён!');
-
     }
 
-    public function store($request) : void
+    public function store($request): void
     {
         $path = $this->imageService->handleUploadedImage($request->file('lot.image'));
 

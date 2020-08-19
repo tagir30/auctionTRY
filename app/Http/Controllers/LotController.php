@@ -19,7 +19,6 @@ class LotController extends Controller
 {
     const ADD_LOT = 'addToAuction';
     const REMOVE_LOT = 'removeFromAuction';
-    const UPDATE_LOT = 'update';
 
     private $lotService;
     private $paginate = 10;

@@ -31,7 +31,7 @@ class UpdateBetRequest extends FormRequest
                 'integer',
                 function ($attribute, $value, $fail) {
                     if ($this->offer->bet_on_lot > $value) {
-                        $fail('Ставка должна быть выше прежней. Пожалуйств обновите страницу!   ');
+                        $fail('Ставка должна быть выше прежней. Пожалуйста обновите страницу!');
                     }
                 }
 

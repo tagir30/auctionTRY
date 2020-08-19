@@ -2018,19 +2018,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
 
                 _this.flash_success = 'Ставка принята.';
-                _context.next = 15;
+                _context.next = 16;
                 break;
 
               case 12:
                 _context.prev = 12;
                 _context.t0 = _context["catch"](0);
 
-                _context.t0.response.data.errors.bet_on_lot.forEach(function (error) {
-                  _this.errors.push(error);
-                }); //Как обрабатывать не отдельно :(
+                // error.response.data.errors.bet_on_lot.forEach(error => {
+                //     this.errors.push(error)
+                // });//Как обрабатывать не отдельно :(
+                if (_context.t0.response.status === 422) {
+                  //Можно вынести в отдельный класс...
+                  _context.t0.response.data.errors.bet_on_lot.forEach(function (error) {
+                    _this.errors.push(error);
+                  }); //Как обрабатывать не отдельно :(
 
+                }
 
-              case 15:
+                if (_context.t0.response.status === 403) {
+                  _this.errors.push(_context.t0.response.data.message);
+                }
+
+              case 16:
               case "end":
                 return _context.stop();
             }
@@ -2337,20 +2347,14 @@ function Offer(_ref) {
       });
     },
     refreshOffer: function refreshOffer(offer) {
-      console.log(this.lots);
       var index = this.lots.map(function (lot) {
-        console.log(lot.offer_id);
         return lot.offer_id;
-      }).indexOf(offer.offer_id);
-      console.log(index);
+      }).indexOf(offer.offer_id); //Получаем индех для удаления
 
       if (index !== -1) {
-        console.log('this delete');
+        //Если нашёл удаляем
         this.lots.splice(index, 1);
-      }
-
-      if (index === -1) {
-        console.log('this push');
+      } else if (index === -1) {
         this.lots.push(new Offer(offer));
       }
     }

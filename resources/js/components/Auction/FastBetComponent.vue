@@ -76,10 +76,18 @@
                         bet_on_lot: this.bet,
                     });
                     this.flash_success = 'Ставка принята.'
-                } catch (error) {
-                    error.response.data.errors.bet_on_lot.forEach(error => {
-                        this.errors.push(error)
-                    });//Как обрабатывать не отдельно :(
+                } catch (e) {
+                    // error.response.data.errors.bet_on_lot.forEach(error => {
+                    //     this.errors.push(error)
+                    // });//Как обрабатывать не отдельно :(
+                    if(e.response.status === 422){//Можно вынести в отдельный класс...
+                        e.response.data.errors.bet_on_lot.forEach(error => {
+                            this.errors.push(error)
+                        });//Как обрабатывать не отдельно :(
+                    }
+                    if(e.response.status === 403){
+                        this.errors.push(e.response.data.message);
+                    }
                 }
 
             }
