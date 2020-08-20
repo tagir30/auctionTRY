@@ -14,7 +14,7 @@
             </option>
         </select>
 
-        <fast-bet :user_id="user_id" @bet="onBet" v-if="auth"></fast-bet>
+        <fast-bet :user_id="user_id" v-if="auth"></fast-bet>
         <h3 v-else="auth">Для ставки необходимо <a :href="loginUrl">войти</a></h3>
 
 
@@ -68,7 +68,10 @@
         mounted() {
             Echo.channel('lot-change')
                 .listen('OfferStatusChanged', (lot) => {
-                    this.refreshOffer(lot);
+                    this.lotsUpdate(lot);
+                })
+                .listen('OfferBetChange', (offer) => {
+                    this.updateBetOnLot(offer);
                 });
             this.read();
 
@@ -79,14 +82,7 @@
                 const {data} = await window.axios.get('/api/offers');
                 data.forEach(offer => this.lots.push(new Offer(offer)));
             },
-            onBet(data) {
-                this.lots.map(lot => {
-                    if (lot.offer_id == data.offer_id) {
-                        lot.bet_on_lot = data.bet_on_lot;
-                    }
-                });
-            },
-            refreshOffer(offer) {
+            lotsUpdate(offer) {
                 const index = this.lots.map(lot => {
                     return lot.offer_id;
                 }).indexOf(offer.offer_id);//Получаем индех для удаления
@@ -96,6 +92,13 @@
                 } else if (index === -1) {
                     this.lots.push(new Offer(offer))
                 }
+            },
+            updateBetOnLot(offer){
+                this.lots.map(lot => {
+                    if (lot.offer_id === offer.offer.id) {
+                        lot.bet_on_lot = offer.offer.bet_on_lot;
+                    }
+                });
             }
 
         }

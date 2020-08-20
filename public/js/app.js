@@ -2011,23 +2011,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 7:
                 response = _context.sent;
-
-                _this.$emit('bet', {
-                  offer_id: offer,
-                  bet_on_lot: _this.bet
-                });
-
                 _this.flash_success = 'Ставка принята.';
-                _context.next = 16;
+                _context.next = 15;
                 break;
 
-              case 12:
-                _context.prev = 12;
+              case 11:
+                _context.prev = 11;
                 _context.t0 = _context["catch"](0);
 
-                // error.response.data.errors.bet_on_lot.forEach(error => {
-                //     this.errors.push(error)
-                // });//Как обрабатывать не отдельно :(
+                //Как обрабатывать не отдельно :(
                 if (_context.t0.response.status === 422) {
                   //Можно вынести в отдельный класс...
                   _context.t0.response.data.errors.bet_on_lot.forEach(function (error) {
@@ -2040,12 +2032,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this.errors.push(_context.t0.response.data.message);
                 }
 
-              case 16:
+              case 15:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[0, 12]]);
+        }, _callee, null, [[0, 11]]);
       }))();
     }
   }
@@ -2305,7 +2297,9 @@ function Offer(_ref) {
     var _this = this;
 
     Echo.channel('lot-change').listen('OfferStatusChanged', function (lot) {
-      _this.refreshOffer(lot);
+      _this.lotsUpdate(lot);
+    }).listen('OfferBetChange', function (offer) {
+      _this.updateBetOnLot(offer);
     });
     this.read();
   },
@@ -2339,14 +2333,7 @@ function Offer(_ref) {
         }, _callee);
       }))();
     },
-    onBet: function onBet(data) {
-      this.lots.map(function (lot) {
-        if (lot.offer_id == data.offer_id) {
-          lot.bet_on_lot = data.bet_on_lot;
-        }
-      });
-    },
-    refreshOffer: function refreshOffer(offer) {
+    lotsUpdate: function lotsUpdate(offer) {
       var index = this.lots.map(function (lot) {
         return lot.offer_id;
       }).indexOf(offer.offer_id); //Получаем индех для удаления
@@ -2357,6 +2344,13 @@ function Offer(_ref) {
       } else if (index === -1) {
         this.lots.push(new Offer(offer));
       }
+    },
+    updateBetOnLot: function updateBetOnLot(offer) {
+      this.lots.map(function (lot) {
+        if (lot.offer_id === offer.offer.id) {
+          lot.bet_on_lot = offer.offer.bet_on_lot;
+        }
+      });
     }
   }
 });
@@ -45095,10 +45089,7 @@ var render = function() {
       ),
       _vm._v(" "),
       _vm.auth
-        ? _c("fast-bet", {
-            attrs: { user_id: _vm.user_id },
-            on: { bet: _vm.onBet }
-          })
+        ? _c("fast-bet", { attrs: { user_id: _vm.user_id } })
         : _c("h3", [
             _vm._v("Для ставки необходимо "),
             _c("a", { attrs: { href: _vm.loginUrl } }, [_vm._v("войти")])

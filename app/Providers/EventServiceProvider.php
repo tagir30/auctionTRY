@@ -18,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\OfferStatusChanged' => [
             'App\Listeners\OfferStatusChangedListener',
         ],
+        'App\Events\OfferBetChange' => [
+            'App\Listeners\OfferBetChangedListener'
+        ]
     ];
 
     /**

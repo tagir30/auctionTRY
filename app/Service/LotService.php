@@ -58,6 +58,7 @@ class LotService
             'bet_on_lot' => $lot->startingPrice,
         ]);
         $lot->offer()->save($offer);
+        $lot->update();
         ProcessLotCancel::dispatch($lot, $offer)->delay(now()->addHours($deferenceHours));//Чем это заменить можно...
 
 
