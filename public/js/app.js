@@ -2105,14 +2105,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       errors: [],
       flash_success: [],
       pathImag: 'http://auction/storage/' + this.lot.pathImage,
+      bet_on_lot: null,
       bet: null,
       loginUrl: 'http://auction/login'
     };
   },
-  mounted: function mounted() {},
+  mounted: function mounted() {
+    var _this = this;
+
+    Echo.channel('lot-change').listen('OfferBetChange', function (offer) {
+      _this.updateBetOnLot(offer);
+    });
+  },
+  computed: {
+    updateBet: function updateBet() {
+      return this.bet_on_lot ? this.bet_on_lot : this.lot.offer.bet_on_lot;
+    }
+  },
   methods: {
     update: function update() {
-      var _this = this;
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
         var response;
@@ -2121,23 +2133,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context.prev = _context.next) {
               case 0:
                 _context.prev = 0;
-                _this.errors = [];
-                _this.flash_success = [];
+                _this2.errors = [];
+                _this2.flash_success = [];
                 _context.next = 5;
                 return window.axios({
                   method: 'put',
-                  url: "/api/offers/".concat(_this.lot.offer.id),
+                  url: "/api/offers/".concat(_this2.lot.offer.id),
                   data: {
-                    bet_on_lot: _this.bet,
-                    user_id: _this.user_id
+                    bet_on_lot: _this2.bet,
+                    user_id: _this2.user_id
                   }
                 });
 
               case 5:
                 response = _context.sent;
-                _this.lot.offer.bet_on_lot = _this.bet;
-                _this.bet = null;
-                _this.flash_success = 'Ставка принята.';
+                _this2.lot.offer.bet_on_lot = _this2.bet;
+                _this2.bet = null;
+                _this2.flash_success = 'Ставка принята.';
                 _context.next = 15;
                 break;
 
@@ -2147,13 +2159,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 if (_context.t0.response.status === 422) {
                   _context.t0.response.data.errors.bet_on_lot.forEach(function (error) {
-                    _this.errors.push(error);
+                    _this2.errors.push(error);
                   }); //Как обрабатывать не отдельно :(
 
                 }
 
                 if (_context.t0.response.status === 403) {
-                  _this.errors.push(_context.t0.response.data.message);
+                  _this2.errors.push(_context.t0.response.data.message);
                 }
 
               case 15:
@@ -2163,6 +2175,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee, null, [[0, 11]]);
       }))();
+    },
+    updateBetOnLot: function updateBetOnLot(offer) {
+      this.bet_on_lot = offer.offer.bet_on_lot;
     }
   }
 });
@@ -44924,11 +44939,7 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("li", { staticClass: "list-group-item" }, [
-            _vm._v(
-              "Актуальная ставка: " +
-                _vm._s(_vm.lot.offer.bet_on_lot) +
-                " рублей"
-            )
+            _vm._v("Актуальная ставка: " + _vm._s(_vm.updateBet) + " рублей")
           ]),
           _vm._v(" "),
           _c("li", { staticClass: "list-group-item" }, [

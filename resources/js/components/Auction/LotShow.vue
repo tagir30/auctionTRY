@@ -23,7 +23,7 @@
                 <ul class="list-group">
                     <li class="list-group-item">Название: {{lot.name}}</li>
                     <li class="list-group-item">Описание: {{lot.description}}</li>
-                    <li class="list-group-item">Актуальная ставка: {{lot.offer.bet_on_lot}} рублей</li>
+                    <li class="list-group-item">Актуальная ставка: {{updateBet}} рублей</li>
                     <li class="list-group-item">Дата окончания торгов: {{lot.timeLeft}}</li>
                     <li class="list-group-item" >Ставка<input type="text" name="" class="form-control" v-model="bet"></li>
                     <li @click="update"  v-if="auth" class="list-group-item"><button type="submit" class="btn-primary">Сделать ставку</button></li>
@@ -42,11 +42,21 @@
                 errors: [],
                 flash_success: [],
                 pathImag: 'http://auction/storage/' + this.lot.pathImage,
+                bet_on_lot: null,
                 bet: null,
                 loginUrl: 'http://auction/login',
             }
         },
         mounted(){
+            Echo.channel('lot-change')
+                .listen('OfferBetChange', (offer) => {
+                    this.updateBetOnLot(offer);
+                });
+        },
+        computed: {
+            updateBet: function (){
+                return this.bet_on_lot ? this.bet_on_lot : this.lot.offer.bet_on_lot;
+            }
         },
         methods:{
             async update(){
@@ -75,6 +85,9 @@
                         this.errors.push(e.response.data.message);
                     }
                 }
+            },
+            updateBetOnLot(offer){
+                this.bet_on_lot = offer.offer.bet_on_lot;
             }
         }
     }
