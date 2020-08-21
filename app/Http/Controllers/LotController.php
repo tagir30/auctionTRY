@@ -108,7 +108,6 @@ class LotController extends Controller
     public function update(UpdateLotRequest $request, Lot $lot, MessageBag $errors)
     {
         $this->authorize('update', $lot);
-
         if ($lot->status) {
             $errors->add('lotInAuction', 'Лот находиться на аукционе, изменения запрещены!');
         } else {
@@ -134,7 +133,6 @@ class LotController extends Controller
         if ($request->action === self::REMOVE_LOT) {
             $this->lotService->removeLotFromAuction($lot);
         }
-
 
         return redirect()->route('lots.index');
 

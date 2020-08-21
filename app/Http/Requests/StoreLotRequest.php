@@ -24,7 +24,7 @@ class StoreLotRequest extends FormRequest
     public function rules()
     {
         return [
-            'lot.nameLot' => 'required|string|min:3',
+            'lot.name' => 'required|string|min:3',
             'lot.description' => 'required|string|min:3',
             'lot.startingPrice' => 'required|integer',
             'lot.timeLeft' => 'required|after:now',
@@ -34,7 +34,7 @@ class StoreLotRequest extends FormRequest
     public function messages()
     {
         return [
-            'lot.nameLot.required' => 'Заполните название лота',
+            'lot.name.required' => 'Заполните название лота',
             'lot.description.required' => 'Заполните описание лота',
             'lot.startingPrice.required' => 'Заполните начальную ставку',
             'lot.timeLeft.required' => 'Заполнить время выставления лота',

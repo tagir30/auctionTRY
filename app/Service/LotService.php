@@ -69,14 +69,15 @@ class LotService
     public function update($lot): void
     {
         $path = $this->imageService->handleUploadedUpdateImage(request()->file('lot.image'));
-        $lot->update([//Мб вынести в DTO
-            'name' => request()->lot['nameLot'],
-            'description' => request()->lot['description'],
-            'startingPrice' => request()->lot['startingPrice'],
-            'timeLeft' => request()->lot['timeLeft'],
-            'pathImage' => $path ?? $lot->pathImage,
-            'user_id' => Auth::id(),
-        ]);
+//        $lot->update([//Мб вынести в DTO
+//            'name' => request()->lot['nameLot'],
+//            'description' => request()->lot['description'],
+//            'startingPrice' => request()->lot['startingPrice'],
+//            'timeLeft' => request()->lot['timeLeft'],
+//            'pathImage' => $path ?? $lot->pathImage,
+//            'user_id' => Auth::id(),
+//        ]);
+        $lot->update([request()->lot, 'pathImage' => $path ?? $lot->pathImag]);//можно ли так?
         session()->flash('success_message', 'Лот успешно обновлён!');
     }
 
@@ -85,7 +86,7 @@ class LotService
         $path = $this->imageService->handleUploadedImage($request->file('lot.image'));
 
         Lot::create([
-            'name' => $request->lot['nameLot'],
+            'name' => $request->lot['name'],
             'description' => $request->lot['description'],
             'startingPrice' => $request->lot['startingPrice'],
             'timeLeft' => $request->lot['timeLeft'],
