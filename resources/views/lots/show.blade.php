@@ -29,7 +29,7 @@
                     <div class="mb-3">
                         <label>Название лота</label>
                         <div class="input-group">
-                            <input type="text" name="lot[nameLot]" placeholder="Название лота" value="{{$lot->name}}">
+                            <input type="text" name="lot[name]" placeholder="Название лота" value="{{$lot->name}}">
                         </div>
                     </div>
                     <div class="mb-3">

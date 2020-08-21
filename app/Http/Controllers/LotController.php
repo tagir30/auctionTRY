@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OfferStatusChanged;
 use App\Http\Requests\StoreLotRequest;
 use App\Http\Requests\UpdateLotRequest;
 use App\Lot;
@@ -18,7 +19,6 @@ class LotController extends Controller
 {
     const ADD_LOT = 'addToAuction';
     const REMOVE_LOT = 'removeFromAuction';
-    const UPDATE_LOT = 'update';
 
     private $lotService;
     private $paginate = 10;
@@ -108,7 +108,6 @@ class LotController extends Controller
     public function update(UpdateLotRequest $request, Lot $lot, MessageBag $errors)
     {
         $this->authorize('update', $lot);
-
         if ($lot->status) {
             $errors->add('lotInAuction', 'Лот находиться на аукционе, изменения запрещены!');
         } else {
@@ -134,6 +133,7 @@ class LotController extends Controller
         if ($request->action === self::REMOVE_LOT) {
             $this->lotService->removeLotFromAuction($lot);
         }
+
         return redirect()->route('lots.index');
 
     }

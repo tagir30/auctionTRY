@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\OfferBetChange;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateBetRequest;
 use App\Lot;
@@ -34,7 +35,7 @@ class OfferController extends Controller
         $offer->bet_on_lot = $request->bet_on_lot;
         $offer->user_id_bet = $request->user_id;
         $offer->update();
-
+        event(new OfferBetChange($offer));
         return response(null, Response::HTTP_OK);
     }
 

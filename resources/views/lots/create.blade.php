@@ -19,7 +19,7 @@
             <div class="mb-3">
                 <label>Название лота</label>
                 <div class="input-group">
-                    <input type="text" name="lot[nameLot]" placeholder="Название лота" value="{{old('lot.nameLot')}}">
+                    <input type="text" name="lot[name]" placeholder="Название лота" value="{{old('lot.nameLot')}}">
                 </div>
             </div>
             <div class="mb-3">

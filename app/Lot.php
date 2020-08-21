@@ -5,9 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
+use Laravelista\Comments\Commentable;
 
 class Lot extends Model
 {
+    use Commentable;
+
     protected $fillable = ['name', 'description', 'startingPrice', 'timeLeft', 'pathImage', 'user_id'];
 
     /**
