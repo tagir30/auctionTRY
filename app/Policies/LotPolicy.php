@@ -32,7 +32,7 @@ class LotPolicy
      */
     public function update(User $user, Lot $lot)
     {
-        return $user->id === $lot->user_id;
+        return $user->id === $lot->user_id && $lot->status != 1;//Проверка статуса скорее всего в gate вынесте надо
     }
 
     /**
@@ -44,7 +44,7 @@ class LotPolicy
      */
     public function delete(User $user, Lot $lot)
     {
-        return $user->id === $lot->user_id;
+        return $user->id === $lot->user_id && $lot->status != 1;
     }
 
 //    /**

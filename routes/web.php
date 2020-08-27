@@ -20,6 +20,8 @@ Route::get('/', function () {
     return view('auth.login');//Какую-нибудь приветсвенную страницу
 });
 
+Route::get('/search', 'AuctionController@search')->name('search');
+
 Route::group([
     'middleware' => 'auth',
     'prefix' => 'lots',
