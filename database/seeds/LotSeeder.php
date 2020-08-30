@@ -14,21 +14,12 @@ class LotSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::first();
+        $userIds = User::pluck('id');
 
-        $lot1 = new Lot();
-        $lot1->status = 1;
-        $lot1->name = 'first lot';
-        $lot1->startingPrice = 12000;
-        $lot1->description = 'Lot 1 create for test';
-        $lot1->timeLeft = now()->addHours(5);
-        $lot1->pathImage = config('constants.PATH_DEFAULT_IMAGE');
-        $lot1->user_id = $user->id;
-        $lot1->save();
-        $offer = new Offer([
-            'lot_id' => $lot1->id,
-            'bet_on_lot' => $lot1->startingPrice,
-        ]);
-        $lot1->offer()->save($offer);
+        $lots = factory(Lot::class, 10)->make()->each(function ($lot) use ($userIds){
+            $lot->user_id = $userIds->random();
+        })->toArray();
+
+        Lot::insert($lots);
     }
 }

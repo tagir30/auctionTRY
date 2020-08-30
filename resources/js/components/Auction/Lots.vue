@@ -10,7 +10,7 @@
                 :value='lot.offer_id'
                 v-bind="lots"
                 v-for="lot in lots"
-            >Название: {{lot.name}}, Описание: {{lot.description}}, Текущая ставка: {{lot.bet_on_lot}} рублей
+            >Название: {{lot.name}}, Описание: {{lot.description.slice(0,20) + '...'}}, Текущая ставка: {{lot.bet_on_lot}} рублей
             </option>
         </select>
 

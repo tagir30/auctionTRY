@@ -40,11 +40,10 @@ class AuctionController extends Controller
         ], [
             'query.min' => 'Запрос должен быть не менее 3 символов!',
             'query.required' => 'Введите запрос!',
-
         ]);
         $queryRequest = $request->input('query');
         $offers = Offer::whereHas('lot', function ($query) use ($queryRequest) {
-            $query->where('name', 'like', "$queryRequest%");
+            $query->where('name', 'like', "%$queryRequest%");
         })->with('lot')->get();
 
         return view('auction.result-search', compact('offers'));

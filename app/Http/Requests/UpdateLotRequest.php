@@ -24,8 +24,8 @@ class UpdateLotRequest extends FormRequest
     public function rules()
     {
         return [
-            'lot.name' => 'string|min:3',
-            'lot.description' => 'string|min:3',
+            'lot.name' => 'string|min:3|max:20',
+            'lot.description' => 'string|min:3|max:200',
             'lot.startingPrice' => 'integer',
             'lot.timeLeft' => 'after:now',
         ];
@@ -35,9 +35,11 @@ class UpdateLotRequest extends FormRequest
     {
         return [
             'lot.name.min' => 'Поле названия лота должно одержать не менее 3 символов',
+            'lot.name.max' => 'Поле названия лота должно одержать не более 20 символов',
             'lot.description.min' => 'Поле описания лота должно одержать не менее 3 символов',
             'lot.startingPrice.integer' => 'Начальная цена должна быть числом',
             'lot.timeLeft.after' => 'Дата должна быть не меньше сегодняшней даты',
+            'lot.description.max' => 'Поле описания лота должно одержать не более 200 символов',
         ];
     }
 }

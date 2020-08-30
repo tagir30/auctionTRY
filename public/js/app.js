@@ -45087,7 +45087,7 @@ var render = function() {
                   "Название: " +
                     _vm._s(lot.name) +
                     ", Описание: " +
-                    _vm._s(lot.description) +
+                    _vm._s(lot.description.slice(0, 20) + "...") +
                     ", Текущая ставка: " +
                     _vm._s(lot.bet_on_lot) +
                     " рублей\n        "

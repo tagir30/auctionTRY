@@ -43,7 +43,7 @@
                             <div class="card-body">
                                 <p class="card-text">
                                 <h1>{{$lot->name}}</h1>
-                                <h2>{{$lot->description}}</h2>
+                                <h2>{{$lot->short_description}}</h2>
                                 <h3>{{$lot->startingPrice}} рублей</h3>
                                 <h3>{{$lot->timeLeft}}</h3>
                                 <p>

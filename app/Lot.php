@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Laravelista\Comments\Commentable;
 
 class Lot extends Model
@@ -36,5 +37,12 @@ class Lot extends Model
     public function scopeGetCompletedLot($query){
         return $query->where('user_id', Auth::id())->where('status', -1);
     }
+
+    public function getShortDescriptionAttribute()
+    {
+        return Str::limit($this->description, 35);
+    }
+
+
 
 }
