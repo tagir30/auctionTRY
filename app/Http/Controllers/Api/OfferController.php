@@ -17,7 +17,7 @@ class OfferController extends Controller
      */
     public function index()
     {
-        $lots = Lot::where('status', 1)->with('offer')->get();
+        $lots = Lot::where('status', 1)->with('offer')->orderBy('timeLeft')->get();
         return response($lots->jsonSerialize(), Response::HTTP_OK);
     }
 

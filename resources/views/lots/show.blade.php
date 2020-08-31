@@ -35,7 +35,7 @@
                     <div class="mb-3">
                         <label>Описание лота</label>
                         <div class="input-group">
-                        <textarea type="text" name="lot[description]" placeholder="Описание лота" rows="10" cols="45">{{$lot->description}} </textarea>
+                        <textarea type="text" name="lot[description]" placeholder="Описание лота" rows="10" cols="45">{{$lot->description}}</textarea>
                         </div>
                     </div>
                     <div class="mb-3">

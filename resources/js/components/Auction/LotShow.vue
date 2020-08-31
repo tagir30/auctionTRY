@@ -14,8 +14,8 @@
         <div class="row no-gutters">
 
             <div class="col-12 col-sm-6 col-md-5">
-                <img class="card-img-top"
-                     style="height: 300px; width: 300px; display: block;"
+                <img class="card-img-top scale"
+                     style="height: 300px; width: 300px; display: block; "
                      :src="pathImag"
                      data-holder-rendered="true">
             </div>
@@ -92,3 +92,12 @@
         }
     }
 </script>
+
+<style>
+    .scale {
+        transition: 1s; /* Время эффекта */
+    }
+    .scale:hover {
+        transform: scale(1.2); /* Увеличиваем масштаб */
+    }
+</style>
