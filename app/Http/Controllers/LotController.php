@@ -67,7 +67,7 @@ class LotController extends Controller
      */
     public function store(StoreLotRequest $request)
     {
-        $this->lotService->store($request);//Стоит передавать реквест, или request() можно использовать...
+        $this->lotService->store($request); //Стоит передавать реквест, или request() можно использовать...
 
         return redirect()->route('lots.index')->with('success_message', 'Лот успешно создан!');
     }
@@ -108,6 +108,7 @@ class LotController extends Controller
     public function update(UpdateLotRequest $request, Lot $lot, MessageBag $errors)
     {
         $this->authorize('update', $lot);
+
         if ($lot->status) {
             $errors->add('lotInAuction', 'Лот находиться на аукционе, изменения запрещены!');
         } else {
@@ -126,7 +127,7 @@ class LotController extends Controller
     {
         $lot = Lot::findOrFail($request->lot);
 
-        if ($request->action === self::ADD_LOT) {//или объеденить их elseif?
+        if ($request->action === self::ADD_LOT) { //или объеденить их elseif?
             $this->lotService->addLotToAuction($lot);
         }
 
@@ -135,7 +136,6 @@ class LotController extends Controller
         }
 
         return redirect()->route('lots.index');
-
     }
 
     /**
@@ -145,7 +145,7 @@ class LotController extends Controller
      * @return void
      * @throws AuthorizationException
      */
-    public function destroy(Lot $lot)//Дописать условия при нахождения лота на аукционне и т.д
+    public function destroy(Lot $lot) //Дописать условия при нахождения лота на аукционне и т.д
     {
         $this->authorize('delete', $lot);
         Storage::delete('public/' . $lot->pathImage);

@@ -40,7 +40,7 @@ class LotService
         $lot->update();
         event(new OfferStatusChanged($lot));
         // Возможно просто запустить job для удаления ...
-        ProcessLotCancel::dispatch($lot, $lot->offer)->delay(5);//Вдруг event долго идти будет
+        ProcessLotCancel::dispatch($lot, $lot->offer)->delay(5); //Вдруг event долго идти будет
         // Offer::where('lot_id', $lot->id)->firstOrFail()->delete();//Эвент не успевает проработать...
         session()->flash('success_message', 'Лот успешно снят с аукционна!');
     }
@@ -59,7 +59,7 @@ class LotService
         ]);
         $lot->offer()->save($offer);
         $lot->update();
-        ProcessLotCancel::dispatch($lot, $offer)->delay(now()->addHours($deferenceHours));//Чем это заменить можно...
+        ProcessLotCancel::dispatch($lot, $offer)->delay(now()->addHours($deferenceHours)); //Чем это заменить можно...
 
 
         event(new OfferStatusChanged($lot));
@@ -69,20 +69,22 @@ class LotService
     public function update($lot): void
     {
         $path = $this->imageService->handleUploadedUpdateImage(request()->file('lot.image'));
-//        $lot->update([//Мб вынести в DTO
-//            'name' => request()->lot['nameLot'],
-//            'description' => request()->lot['description'],
-//            'startingPrice' => request()->lot['startingPrice'],
-//            'timeLeft' => request()->lot['timeLeft'],
-//            'pathImage' => $path ?? $lot->pathImage,
-//            'user_id' => Auth::id(),
-//        ]);
-        $lot->update([request()->lot, 'pathImage' => $path ?? $lot->pathImag]);//можно ли так?
+
+        $lot->update([ //Мб вынести в DTO
+            'name' => request()->lot['name'],
+            'description' => request()->lot['description'],
+            'startingPrice' => request()->lot['startingPrice'],
+            'timeLeft' => request()->lot['timeLeft'],
+            'pathImage' => $path ?? $lot->pathImage,
+            'user_id' => Auth::id(),
+        ]);
+
         session()->flash('success_message', 'Лот успешно обновлён!');
     }
 
     public function store($request): void
     {
+        dd(1);
         $path = $this->imageService->handleUploadedImage($request->file('lot.image'));
 
         Lot::create([
@@ -94,5 +96,4 @@ class LotService
             'user_id' => Auth::id(),
         ]);
     }
-
 }
