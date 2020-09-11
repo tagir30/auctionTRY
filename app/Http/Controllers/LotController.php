@@ -112,7 +112,7 @@ class LotController extends Controller
         if ($lot->status) {
             $errors->add('lotInAuction', 'Лот находиться на аукционе, изменения запрещены!');
         } else {
-            $this->lotService->update($lot);
+            $this->lotService->update($lot, $request);
         }
 
         return redirect()->route('lots.index')->withErrors($errors);

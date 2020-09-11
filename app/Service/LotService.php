@@ -66,34 +66,28 @@ class LotService
         session()->flash('success_message', 'Лот успешно выставлен!');
     }
 
-    public function update($lot): void
+    public function update($lot, $request): void
     {
         $path = $this->imageService->handleUploadedUpdateImage(request()->file('lot.image'));
 
-        $lot->update([ //Мб вынести в DTO
-            'name' => request()->lot['name'],
-            'description' => request()->lot['description'],
-            'startingPrice' => request()->lot['startingPrice'],
-            'timeLeft' => request()->lot['timeLeft'],
-            'pathImage' => $path ?? $lot->pathImage,
-            'user_id' => Auth::id(),
-        ]);
+        $lot->fill($request->validated()['lot']);
+        $lot->user_id = Auth::id();
+        $lot->pathImage = $path ?? $lot->pathImage;
+        $lot->save();
 
         session()->flash('success_message', 'Лот успешно обновлён!');
     }
 
     public function store($request): void
     {
-        dd(1);
+
         $path = $this->imageService->handleUploadedImage($request->file('lot.image'));
 
-        Lot::create([
-            'name' => $request->lot['name'],
-            'description' => $request->lot['description'],
-            'startingPrice' => $request->lot['startingPrice'],
-            'timeLeft' => $request->lot['timeLeft'],
-            'pathImage' => $path,
-            'user_id' => Auth::id(),
-        ]);
+        $lot = new Lot();
+        $lot->fill($request->validated()['lot']);
+        $lot->user_id = Auth::id();
+        $lot->pathImage = $path ?? $lot->pathImage;
+        $lot->save();
+
     }
 }
